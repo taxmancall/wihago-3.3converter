@@ -4,447 +4,406 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>위하고 사업소득 변환기</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'맑은 고딕',sans-serif;background:#f5f6fa;min-height:100vh;padding:32px 16px;color:#1a1a2e}
-.container{max-width:640px;margin:0 auto}
-h1{font-size:20px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
-.sub{font-size:13px;color:#6b7280;margin-bottom:28px}
-.card{background:#fff;border-radius:12px;border:1px solid #e5e7eb;padding:24px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.card-title{font-size:12px;font-weight:700;color:#6b7280;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
-.badge{width:20px;height:20px;border-radius:50%;background:#3b5bdb;color:#fff;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field{display:flex;flex-direction:column;gap:5px}
-.field label{font-size:12px;font-weight:600;color:#374151}
-.field label .req{color:#ef4444;margin-left:2px}
-input,select{font-size:13px;border:1px solid #d1d5db;border-radius:8px;padding:8px 10px;background:#fff;color:#1a1a2e;width:100%;transition:border .15s}
-input:focus,select:focus{outline:none;border-color:#3b5bdb;box-shadow:0 0 0 3px rgba(59,91,219,.1)}
-
-/* 파일 드롭존 */
-.dropzone{border:2px dashed #d1d5db;border-radius:10px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;position:relative}
-.dropzone:hover,.dropzone.drag{border-color:#3b5bdb;background:#eef2ff}
-.dropzone .icon{font-size:32px;margin-bottom:8px}
-.dropzone p{font-size:13px;color:#6b7280}
-.dropzone p strong{color:#3b5bdb}
-.dropzone input{position:absolute;inset:0;opacity:0;cursor:pointer}
-
-/* 파일 선택됨 */
-.file-selected{display:none;align-items:center;gap:10px;padding:10px 14px;background:#eef2ff;border-radius:8px;margin-top:10px}
-.file-selected .fname{flex:1;font-size:13px;font-weight:600;color:#1a1a2e}
-.file-selected .fsize{font-size:11px;color:#6b7280}
-.file-selected .rm{cursor:pointer;color:#9ca3af;font-size:16px;padding:0 2px}
-.file-selected .rm:hover{color:#ef4444}
-
-/* 버튼 */
-.btn-convert{width:100%;padding:13px;background:#3b5bdb;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-convert:hover{background:#2f4ac7}
-.btn-convert:disabled{background:#9ca3af;cursor:not-allowed}
-
-/* 결과 */
-.result-box{display:none;margin-top:16px}
-.result-inner{background:#ecfdf5;border:1px solid #6ee7b7;border-radius:10px;padding:20px}
-.result-title{font-size:14px;font-weight:700;color:#065f46;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
-.metric{background:#fff;border-radius:8px;padding:10px;text-align:center;border:1px solid #d1fae5}
-.metric .mn{font-size:18px;font-weight:700;color:#065f46}
-.metric .ml{font-size:11px;color:#6b7280;margin-top:2px}
-.btn-dl{width:100%;padding:11px;background:#059669;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
-.btn-dl:hover{background:#047857}
-
-/* 경고 */
-.warn-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 12px;font-size:12px;color:#92400e;margin-top:8px}
-.err-box{background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:10px 12px;font-size:12px;color:#7f1d1d;margin-top:10px}
-
-/* 스피너 */
-.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
-@keyframes spin{to{transform:rotate(360deg)}}
+  @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f5f3; --surface: #ffffff; --surface2: #f9f9f8;
+    --border: #e4e4e0; --border2: #d0d0cc;
+    --text: #1a1a18; --text2: #6b6b68; --text3: #9b9b98;
+    --blue-bg: #eef4ff; --blue-text: #1a56db; --blue-border: #c3d4f8;
+    --green-bg: #f0fdf4; --green-text: #15803d; --green-border: #bbf7d0;
+    --red-bg: #fff1f1; --red-text: #b91c1c; --red-border: #fecaca;
+    --amber-bg: #fffbeb; --amber-text: #b45309; --amber-border: #fde68a;
+    --radius: 10px; --radius-sm: 6px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  body { font-family: 'Pretendard', -apple-system, sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  .page { max-width: 760px; margin: 0 auto; padding: 32px 20px 60px; }
+  .header { margin-bottom: 28px; }
+  .header h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .header p { font-size: 13px; color: var(--text2); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .sec-title { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .sec-num { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; background: var(--blue-bg); color: var(--blue-text); font-size: 11px; font-weight: 600; flex-shrink: 0; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  label { display: block; font-size: 11px; font-weight: 500; color: var(--text2); margin-bottom: 4px; }
+  input[type=text], input[type=month], input[type=date], select, textarea {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface); color: var(--text); font-size: 13px; font-family: inherit; outline: none; transition: border-color 0.15s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--blue-text); box-shadow: 0 0 0 3px rgba(26,86,219,0.08); }
+  textarea { resize: vertical; min-height: 110px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; }
+  .tab-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 16px; }
+  .tab-btn { padding: 12px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text2); font-size: 12px; font-weight: 500; font-family: inherit; cursor: pointer; text-align: center; transition: all 0.12s; }
+  .tab-btn:hover { background: var(--bg); border-color: var(--border2); }
+  .tab-btn.active { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-border); }
+  .tab-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+  .tab-sub { font-size: 10px; opacity: 0.75; display: block; margin-top: 2px; }
+  .input-panel { display: none; }
+  .input-panel.show { display: block; }
+  .upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--radius-sm); padding: 24px; text-align: center; cursor: pointer; color: var(--text2); font-size: 13px; background: var(--surface2); transition: all 0.15s; }
+  .upload-zone:hover { background: var(--bg); border-color: var(--blue-text); color: var(--blue-text); }
+  .upload-zone input[type=file] { display: none; }
+  .upload-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+  .fname { font-size: 11px; color: var(--text2); margin-top: 6px; padding: 4px 8px; background: var(--surface2); border-radius: 4px; display: none; }
+  .info-box { padding: 8px 12px; border-radius: var(--radius-sm); font-size: 12px; line-height: 1.6; margin-top: 10px; }
+  .info-blue { background: var(--blue-bg); color: var(--blue-text); border: 1px solid var(--blue-border); }
+  .info-amber { background: var(--amber-bg); color: var(--amber-text); border: 1px solid var(--amber-border); }
+  .kakao-hint { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 12px; font-size: 11px; font-family: 'Courier New', monospace; color: var(--text2); line-height: 1.8; margin-bottom: 8px; }
+  .btn-convert { width: 100%; padding: 12px; background: var(--blue-text); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; font-family: inherit; cursor: pointer; margin-top: 4px; transition: opacity 0.15s; }
+  .btn-convert:hover { opacity: 0.88; }
+  .btn-dl { width: 100%; padding: 11px; border: 1.5px solid var(--green-border); border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; font-family: inherit; cursor: pointer; margin-top: 10px; background: var(--green-bg); color: var(--green-text); display: none; transition: opacity 0.15s; }
+  .btn-dl:hover { opacity: 0.85; }
+  .btn-dl-warn { background: var(--amber-bg); color: var(--amber-text); border-color: var(--amber-border); }
+  .result-wrap { display: none; margin-top: 4px; }
+  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 14px; }
+  .stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 12px 8px; text-align: center; border: 1px solid var(--border); }
+  .stat-n { font-size: 22px; font-weight: 600; color: var(--text); }
+  .stat-l { font-size: 10px; color: var(--text3); margin-top: 2px; }
+  .c-ok .stat-n { color: var(--green-text); }
+  .c-err .stat-n { color: var(--red-text); }
+  .tbl-scroll { max-height: 240px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; table-layout: fixed; }
+  thead th { position: sticky; top: 0; text-align: left; padding: 7px 10px; background: var(--surface2); color: var(--text2); font-weight: 500; border-bottom: 1px solid var(--border); white-space: nowrap; font-size: 11px; }
+  tbody td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--surface2); }
+  .row-err td { background: #fff8f8; }
+  .row-err:hover td { background: #fff1f1; }
+  .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 500; }
+  .tag-ok { background: var(--green-bg); color: var(--green-text); }
+  .tag-err { background: var(--red-bg); color: var(--red-text); }
+  .err-title { font-size: 12px; font-weight: 500; color: var(--red-text); margin-bottom: 6px; margin-top: 14px; }
+  .ok-msg { font-size: 12px; color: var(--green-text); margin-top: 8px; display: none; }
+  .divider { height: 1px; background: var(--border); margin: 16px 0 12px; }
+  @media (max-width: 520px) { .grid3 { grid-template-columns: 1fr 1fr; } .stats { grid-template-columns: repeat(2, 1fr); } }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>위하고 사업소득 변환기</h1>
-  <p class="sub">거래처 급여 엑셀 → 위하고 SmartA 사업소득자료입력 양식</p>
+<div class="page">
 
-  <!-- Step 1: 기본 설정 -->
+  <div class="header">
+    <h1>위하고 사업소득 변환기</h1>
+    <p>거래처 급여 데이터 → 위하고 SmartA 사업소득자료입력 양식 · 주민번호 4단계 검증 포함</p>
+  </div>
+
   <div class="card">
-    <div class="card-title"><span class="badge">1</span>기본 설정</div>
-    <div class="g2" style="margin-bottom:12px">
-      <div class="field">
-        <label>귀속년월<span class="req">*</span></label>
-        <input type="month" id="attr-month" />
-      </div>
-      <div class="field">
-        <label>지급년월일<span class="req">*</span></label>
-        <input type="date" id="pay-date" />
-      </div>
-    </div>
-    <div class="field" style="margin-bottom:12px">
-      <label>소득구분<span class="req">*</span></label>
-      <select id="income-type">
-        <option value="">-- 선택 --</option>
-        <optgroup label="의료/요양">
-          <option value="병의원">병의원</option>
-          <option value="간병인">간병인</option>
-        </optgroup>
-        <optgroup label="교육">
-          <option value="학원강사">학원강사</option>
-          <option value="방과후강사">방과후강사</option>
-          <option value="학습지방문강사">학습지방문강사</option>
-          <option value="교육교구방문강사">교육교구방문강사</option>
-        </optgroup>
-        <optgroup label="IT/전문직">
-          <option value="소프트웨어프리랜서">소프트웨어프리랜서</option>
-          <option value="자문/고문">자문/고문</option>
-          <option value="저술가">저술가</option>
-        </optgroup>
-        <optgroup label="배달/운전">
-          <option value="대리운전">대리운전</option>
-          <option value="퀵서비스">퀵서비스</option>
-          <option value="물품배달">물품배달</option>
-          <option value="음료배달">음료배달</option>
-          <option value="어린이통학버스기사">어린이통학버스기사</option>
-        </optgroup>
-        <optgroup label="판매/영업">
-          <option value="보험설계">보험설계</option>
-          <option value="방판/외판">방판/외판</option>
-          <option value="다단계판매">다단계판매</option>
-          <option value="대출모집인">대출모집인</option>
-          <option value="신용카드회원모집인">신용카드회원모집인</option>
-          <option value="중고자동차판매원">중고자동차판매원</option>
-          <option value="기타모집수당">기타모집수당</option>
-        </optgroup>
-        <optgroup label="예술/스포츠">
-          <option value="화가관련">화가관련</option>
-          <option value="작곡가">작곡가</option>
-          <option value="배우">배우</option>
-          <option value="모델">모델</option>
-          <option value="가수">가수</option>
-          <option value="성악가">성악가</option>
-          <option value="1인미디어콘텐츠창작자">1인미디어콘텐츠창작자</option>
-          <option value="연예보조">연예보조</option>
-          <option value="직업운동가">직업운동가</option>
-          <option value="바둑기사">바둑기사</option>
-          <option value="캐디">캐디</option>
-        </optgroup>
-        <optgroup label="기타">
-          <option value="행사도우미">행사도우미</option>
-          <option value="심부름용역">심부름용역</option>
-          <option value="목욕관리사">목욕관리사</option>
-          <option value="봉사료수취자">봉사료수취자</option>
-          <option value="대여제품방문점검원">대여제품방문점검원</option>
-          <option value="관광통역안내사">관광통역안내사</option>
-          <option value="꽃꽂이교사">꽃꽂이교사</option>
-          <option value="기타인적용역자">기타인적용역자</option>
-        </optgroup>
-      </select>
-    </div>
-    <div class="g2">
-      <div class="field">
+    <div class="sec-title"><span class="sec-num">1</span> 기본 설정</div>
+    <div class="grid3" style="margin-bottom:10px">
+      <div><label>귀속년월 *</label><input type="month" id="attr-month"></div>
+      <div><label>지급년월일 *</label><input type="date" id="pay-date"></div>
+      <div>
         <label>세율</label>
         <select id="tax-rate">
-          <option value="3.3" selected>3.3% (사업소득 일반)</option>
-          <option value="8.8">8.8%</option>
-          <option value="22">22% (비거주자)</option>
+          <option value="0.033">3.3% (일반)</option>
+          <option value="0.088">8.8%</option>
+          <option value="0.22">22% (비거주자)</option>
         </select>
       </div>
-      <div class="field">
+    </div>
+    <div class="grid2">
+      <div>
+        <label>소득구분 *</label>
+        <select id="income-type">
+          <optgroup label="의료"><option value="940910">병의원</option><option value="940911">간병인</option></optgroup>
+          <optgroup label="교육"><option value="940920">학원강사</option><option value="940921">방과후강사</option><option value="940922">학습지방문강사</option><option value="940923">교육교구방문강사</option></optgroup>
+          <optgroup label="IT·전문"><option value="940930">소프트웨어프리랜서</option><option value="940931">자문/고문</option><option value="940932">저술가</option></optgroup>
+          <optgroup label="운송"><option value="940940">대리운전</option><option value="940941">퀵서비스</option><option value="940942">물품배달</option><option value="940943">음료배달</option><option value="940944">어린이통학버스기사</option></optgroup>
+          <optgroup label="보험·금융모집"><option value="940950">보험설계</option><option value="940951">방판/외판</option><option value="940952">다단계판매</option><option value="940953">대출모집인</option><option value="940954">신용카드회원모집인</option><option value="940955">중고자동차판매원</option><option value="940956">기타모집수당</option></optgroup>
+          <optgroup label="연예·예술·스포츠"><option value="940960">화가관련</option><option value="940961">작곡가</option><option value="940962">배우</option><option value="940963">모델</option><option value="940964">가수</option><option value="940965">성악가</option><option value="940966">1인미디어콘텐츠창작자</option><option value="940967">연예보조</option><option value="940968">직업운동가</option><option value="940969">바둑기사</option><option value="940970">캐디</option></optgroup>
+          <optgroup label="기타인적용역"><option value="940980">행사도우미</option><option value="940981">심부름용역</option><option value="940982">목욕관리사</option><option value="940983">봉사료수취자</option><option value="940984">대여제품방문점검원</option><option value="940985">관광통역안내사</option><option value="940986">꽃꽂이교사</option><option value="940999">기타인적용역자</option></optgroup>
+        </select>
+      </div>
+      <div>
         <label>내·외국인구분</label>
-        <select id="foreigner">
-          <option value="0" selected>0. 내국인</option>
-          <option value="1">1. 외국인</option>
-        </select>
+        <select id="national"><option value="0">0. 내국인</option><option value="1">1. 외국인</option></select>
       </div>
     </div>
   </div>
 
-  <!-- Step 2: 파일 업로드 -->
   <div class="card">
-    <div class="card-title"><span class="badge">2</span>급여 파일 업로드</div>
-    <div class="dropzone" id="dropzone">
-      <input type="file" id="file-input" accept=".xlsx,.xls,.csv" />
-      <div class="icon">📂</div>
-      <p><strong>클릭하여 파일 선택</strong> 또는 여기에 드래그</p>
-      <p style="margin-top:4px;font-size:11px">xlsx · xls · csv 지원 · 성명·주민번호·급여 자동 추출</p>
+    <div class="sec-title"><span class="sec-num">2</span> 입력 방식 선택</div>
+    <div class="tab-group">
+      <button class="tab-btn active" id="tab-pre" onclick="switchTab('pre')">
+        <span class="tab-icon">📊</span>세전 엑셀<span class="tab-sub">지급액 기준</span>
+      </button>
+      <button class="tab-btn" id="tab-post" onclick="switchTab('post')">
+        <span class="tab-icon">📊</span>세후 엑셀<span class="tab-sub">차인지급액 기준</span>
+      </button>
+      <button class="tab-btn" id="tab-kakao" onclick="switchTab('kakao')">
+        <span class="tab-icon">💬</span>카톡 / 문자<span class="tab-sub">텍스트 붙여넣기</span>
+      </button>
     </div>
-    <div class="file-selected" id="file-selected">
-      <span style="font-size:18px">📄</span>
-      <span class="fname" id="fname"></span>
-      <span class="fsize" id="fsize"></span>
-      <span class="rm" onclick="clearFile()">✕</span>
+
+    <div class="input-panel show" id="panel-pre">
+      <div class="upload-zone" onclick="document.getElementById('file-pre').click()">
+        <input type="file" id="file-pre" accept=".xlsx,.xls,.csv">
+        <span class="upload-icon">📂</span>
+        <div><strong>클릭하여 파일 선택</strong> 또는 드래그</div>
+        <div style="font-size:11px;margin-top:3px">xlsx · xls · csv 지원</div>
+      </div>
+      <div id="fname-pre" class="fname"></div>
+      <div class="info-box info-blue">컬럼 헤더 자동 인식: <strong>성명 / 주민등록번호 / 급여</strong> (지급액·금액·사업소득 등도 허용)</div>
+    </div>
+
+    <div class="input-panel" id="panel-post">
+      <div class="upload-zone" onclick="document.getElementById('file-post').click()">
+        <input type="file" id="file-post" accept=".xlsx,.xls,.csv">
+        <span class="upload-icon">📂</span>
+        <div><strong>클릭하여 파일 선택</strong> 또는 드래그</div>
+        <div style="font-size:11px;margin-top:3px">xlsx · xls · csv 지원 — 차인지급액(세후) 컬럼 인식</div>
+      </div>
+      <div id="fname-post" class="fname"></div>
+      <div class="info-box info-amber">
+        <strong>세후 역산 공식:</strong> 세전 = 세후 ÷ (1 − 세율 × 1.1)<br>
+        예) 세후 967,000원 → 세전 1,000,000원 (3.3% 기준)<br>
+        소득세 = floor(세전 × 세율) · 지방소득세 = floor(소득세 × 10%)
+      </div>
+    </div>
+
+    <div class="input-panel" id="panel-kakao">
+      <div class="kakao-hint">
+        [입력 예시] 한 줄에 1명, 공백·탭·콤마 구분자 허용<br>
+        홍길동 901225-1234567 1,500,000<br>
+        김영희 8503102345678 800000<br>
+        이철수 770315-1234567 1,200,000
+      </div>
+      <textarea id="kakao-text" placeholder="카톡·문자에서 복사한 내용을 여기에 붙여넣으세요.&#10;&#10;• 성명 / 주민번호 / 금액 순서로 한 줄씩&#10;• 주민번호 하이픈(-) 있어도 없어도 자동 인식&#10;• 금액에 콤마, '원' 글자 포함되어도 허용"></textarea>
+      <div class="info-box info-blue">13자리 숫자를 주민번호로, 10,000 이상 숫자를 금액으로 자동 분류합니다.</div>
     </div>
   </div>
 
-  <!-- 변환 버튼 -->
-  <button class="btn-convert" id="btn-convert" onclick="doConvert()" disabled>
-    <div class="spinner" id="spinner"></div>
-    <span id="btn-text">변환하기</span>
-  </button>
-  <div id="err-msg"></div>
+  <button class="btn-convert" onclick="doConvert()">변환 및 주민번호 검증 실행</button>
 
-  <!-- 결과 -->
-  <div class="result-box" id="result-box">
-    <div class="result-inner">
-      <div class="result-title">✅ 변환 완료</div>
-      <div class="metrics" id="metrics"></div>
-      <a class="btn-dl" id="dl-link" href="#" download>📥 위하고 양식 다운로드 (xlsx)</a>
+  <div class="result-wrap" id="result-wrap">
+    <div class="divider"></div>
+    <div class="card">
+      <div class="sec-title">주민등록번호 검증 결과</div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n" id="s-total">0</div><div class="stat-l">전체</div></div>
+        <div class="stat c-ok"><div class="stat-n" id="s-ok">0</div><div class="stat-l">정상</div></div>
+        <div class="stat c-err"><div class="stat-n" id="s-err">0</div><div class="stat-l">검증오류</div></div>
+        <div class="stat"><div class="stat-n" id="s-warn">0</div><div class="stat-l">형식주의</div></div>
+      </div>
+      <div id="err-area" style="display:none">
+        <div class="err-title">오류 내역</div>
+        <div class="tbl-scroll">
+          <table>
+            <thead><tr><th style="width:40px">행</th><th style="width:70px">성명</th><th style="width:130px">주민번호</th><th>오류유형</th></tr></thead>
+            <tbody id="err-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="ok-msg" id="ok-msg">✓ 모든 주민등록번호가 유효합니다.</div>
     </div>
-    <div id="warns"></div>
+
+    <div class="card">
+      <div class="sec-title">변환 미리보기 (상위 5건)</div>
+      <div class="tbl-scroll">
+        <table>
+          <thead><tr>
+            <th style="width:64px">성명</th>
+            <th style="width:110px">주민번호</th>
+            <th style="width:82px">세전지급액</th>
+            <th style="width:64px">소득세</th>
+            <th style="width:64px">지방세</th>
+            <th style="width:80px">차인지급액</th>
+            <th style="width:46px">검증</th>
+          </tr></thead>
+          <tbody id="preview-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <button class="btn-dl" id="btn-dl" onclick="doDownload()">📥 위하고 양식 다운로드 (xlsx)</button>
   </div>
+
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-let selectedFile = null;
+let currentTab = 'pre';
+let resultRows = [];
 
-// 드래그앤드롭
-const dz = document.getElementById('dropzone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag'); handleFile(e.dataTransfer.files[0]); });
-document.getElementById('file-input').addEventListener('change', e => handleFile(e.target.files[0]));
-
-function handleFile(file) {
-  if (!file) return;
-  selectedFile = file;
-  document.getElementById('fname').textContent = file.name;
-  document.getElementById('fsize').textContent = (file.size / 1024).toFixed(1) + ' KB';
-  document.getElementById('file-selected').style.display = 'flex';
-  checkReady();
-}
-function clearFile() {
-  selectedFile = null;
-  document.getElementById('file-input').value = '';
-  document.getElementById('file-selected').style.display = 'none';
-  checkReady();
-  document.getElementById('result-box').style.display = 'none';
-}
-function checkReady() {
-  const ok = selectedFile &&
-    document.getElementById('attr-month').value &&
-    document.getElementById('pay-date').value &&
-    document.getElementById('income-type').value;
-  document.getElementById('btn-convert').disabled = !ok;
-}
-['attr-month','pay-date','income-type'].forEach(id =>
-  document.getElementById(id).addEventListener('change', checkReady));
-
-// ── 데이터 추출 ──
-function is33Rate(v) {
-  if (v == null) return false;
-  if (typeof v === 'number') return Math.abs(v - 0.033) < 0.001;
-  const s = String(v).replace(/\s/g,'');
-  return s === '3.3%' || s === '0.033' || s === '3.3';
-}
-function is4dae(v) {
-  if (v == null) return false;
-  const s = String(v).replace(/\s/g,'');
-  return s.includes('4대') || s.includes('4大') || s === '4대보험';
-}
-
-function extractData(wb) {
-  const nameHints = ['성명','이름','소득자명','name'];
-  const rrnHints  = ['주민등록번호','주민번호','주민','rrn','등록번호'];
-  const amtHints  = ['금액','급여','지급총액','총급여','지급액','기본급','금  액','지  급'];
-  const insHints  = ['4대보험','보험구분','고용형태','세율','구분'];
-
-  let best = null;
-
-  for (const shName of wb.SheetNames) {
-    const ws = wb.Sheets[shName];
-    const raw = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:true});
-
-    let headerIdx = -1, ni = -1, ri = -1, ai = -1, ii = -1;
-
-    for (let i = 0; i < Math.min(raw.length, 15); i++) {
-      const vals = (raw[i] || []).map(v => v == null ? '' : String(v).replace(/\s/g,''));
-      let foundName = false;
-      for (let j = 0; j < vals.length; j++) {
-        if (ni < 0 && nameHints.some(h => vals[j] === h)) { ni = j; foundName = true; }
-        if (ri < 0 && rrnHints.some(h => vals[j].includes(h))) ri = j;
-        if (ai < 0 && amtHints.some(h => vals[j] === h)) ai = j;
-        if (ii < 0 && insHints.some(h => vals[j].includes(h))) ii = j;
-      }
-      if (foundName) { headerIdx = i; break; }
-    }
-
-    if (headerIdx < 0 || ni < 0 || ri < 0) continue;
-
-    // 금액 컬럼 못 찾으면 숫자 최대값 컬럼 자동 탐색
-    if (ai < 0) {
-      const colSums = {};
-      for (let i = headerIdx + 1; i < raw.length; i++) {
-        const row = raw[i] || [];
-        for (let j = 0; j < row.length; j++) {
-          if (typeof row[j] === 'number' && row[j] > 1000) {
-            colSums[j] = (colSums[j] || 0) + row[j];
-          }
-        }
-      }
-      let maxSum = 0;
-      for (const [j, s] of Object.entries(colSums)) {
-        if (+j !== ni && +j !== ri && +j !== ii && s > maxSum) { maxSum = s; ai = +j; }
-      }
-    }
-
-    // 4대보험 혼재 여부 감지
-    let has4dae = false, has33 = false;
-    for (let i = headerIdx + 1; i < raw.length; i++) {
-      const row = raw[i];
-      if (!row || ii < 0) continue;
-      if (is4dae(row[ii])) has4dae = true;
-      if (is33Rate(row[ii])) has33 = true;
-    }
-    const mixedMode = has4dae && has33; // 혼재 파일
-
-    const data = [];
-    let skipped4dae = 0;
-    for (let i = headerIdx + 1; i < raw.length; i++) {
-      const row = raw[i];
-      if (!row || !row.some(v => v != null)) continue;
-      const name = row[ni] != null ? String(row[ni]).trim() : '';
-      if (!name || !/[\uAC00-\uD7A3]/.test(name)) continue;
-      const rrnRaw = row[ri] != null ? String(row[ri]).trim() : '';
-      const rrn = rrnRaw.replace(/[^0-9]/g, '');
-      if (rrn.length < 7) continue;
-
-      // 혼재 파일이면 3.3%만 추출, 4대보험은 건너뜀
-      if (mixedMode && ii >= 0) {
-        if (is4dae(row[ii])) { skipped4dae++; continue; }
-        if (!is33Rate(row[ii])) continue; // 둘 다 아니면 제외
-      }
-
-      let amt = 0;
-      if (ai >= 0 && row[ai] != null) {
-        const v = row[ai];
-        amt = typeof v === 'number' ? Math.round(v) : parseInt(String(v).replace(/[^0-9]/g,'')) || 0;
-      }
-      data.push({name, rrn, amt});
-    }
-
-    if (skipped4dae > 0) data._skipped4dae = skipped4dae;
-    if (data.length > (best ? best.length : 0)) best = data;
-  }
-  return best || [];
-}
-
-// ── 위하고 xlsx 생성 ──
-function makeWihagoXlsx(data, attrYm, payDate, incomeType, taxRateStr, foreigner) {
-  const taxRate = parseFloat(taxRateStr);
-  const incomeTaxRate = taxRate * (10/11) / 100;
-  const localTaxRate  = taxRate * (1/11)  / 100;
-
-  const headers = [
-    '귀속년월','지급년월일','소득자명','주민등록번호','소득구분',
-    '내.외국인구분','지급총액','세율(%)','소득세','지방소득세',
-    '세액계','차인지급액','연말정산','기본주소','상세주소','영수일자'
-  ];
-
-  const rows = [headers];
-  let warns = [];
-
-  data.forEach(d => {
-    const rrn13 = d.rrn.substring(0, 13);
-    if (rrn13.length < 13) warns.push(`${d.name}: 주민번호 ${rrn13.length}자리 (확인 필요)`);
-    const rrnFmt = rrn13.length >= 13 ? `${rrn13.slice(0,6)}-${rrn13.slice(6)}` : d.rrn;
-
-    // 소득세: 10원 단위 절사 (ROUNDDOWN)
-    const incomeTax = Math.floor(d.amt * incomeTaxRate / 10) * 10;
-    const localTax  = Math.floor(d.amt * localTaxRate  / 10) * 10;
-    const taxSum    = incomeTax + localTax;
-
-    rows.push([
-      attrYm, payDate, d.name, rrnFmt, incomeType,
-      foreigner, d.amt, taxRate, incomeTax, localTax,
-      taxSum, d.amt - taxSum, '부', '', '', payDate
-    ]);
+function switchTab(t) {
+  currentTab = t;
+  ['pre','post','kakao'].forEach(id => {
+    document.getElementById('tab-' + id).classList.toggle('active', id === t);
+    document.getElementById('panel-' + id).classList.toggle('show', id === t);
   });
-
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-
-  // 컬럼 너비
-  ws['!cols'] = [
-    {wch:10},{wch:12},{wch:10},{wch:18},{wch:18},
-    {wch:8},{wch:12},{wch:8},{wch:10},{wch:10},
-    {wch:10},{wch:12},{wch:6},{wch:20},{wch:20},{wch:12}
-  ];
-  ws['!freeze'] = {xSplit:0, ySplit:1};
-
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  return {wb, warns};
 }
 
-// ── 변환 실행 ──
-async function doConvert() {
-  const btn = document.getElementById('btn-convert');
-  const spinner = document.getElementById('spinner');
-  const btnText = document.getElementById('btn-text');
-  const errDiv = document.getElementById('err-msg');
-
-  btn.disabled = true;
-  spinner.style.display = 'block';
-  btnText.textContent = '변환 중...';
-  errDiv.innerHTML = '';
-  document.getElementById('result-box').style.display = 'none';
-
-  try {
-    const buf = await selectedFile.arrayBuffer();
-    const wb = XLSX.read(buf, {type:'array', codepage:949, cellDates:true, raw:false});
-    const data = extractData(wb);
-
-    if (!data.length) throw new Error('성명·주민번호·급여 컬럼을 찾을 수 없습니다. 헤더 행에 "성명", "주민등록번호", "금액"(또는 "급여") 이 포함되어 있는지 확인해 주세요.');
-
-    const attrYm  = document.getElementById('attr-month').value.replace('-','');
-    const payDate = document.getElementById('pay-date').value.replace(/-/g,'');
-    const incomeType = document.getElementById('income-type').value;
-    const taxRate = document.getElementById('tax-rate').value;
-    const foreigner = document.getElementById('foreigner').value;
-
-    const {wb: outWb, warns} = makeWihagoXlsx(data, attrYm, payDate, incomeType, taxRate, foreigner);
-
-    // 다운로드
-    const fname = `위하고_사업소득_${attrYm}.xlsx`;
-    const wbout = XLSX.write(outWb, {bookType:'xlsx', type:'array'});
-    const blob = new Blob([wbout], {type:'application/octet-stream'});
-    const url = URL.createObjectURL(blob);
-    const dlLink = document.getElementById('dl-link');
-    dlLink.href = url;
-    dlLink.download = fname;
-
-    // 메트릭
-    const skipped4dae = data._skipped4dae || 0;
-    const totalAmt = data.reduce((s,d) => s+d.amt, 0);
-    const totalTax = data.reduce((s,d) => {
-      const it = Math.floor(d.amt * parseFloat(taxRate) * (10/11) / 100 / 10) * 10;
-      const lt = Math.floor(d.amt * parseFloat(taxRate) * (1/11)  / 100 / 10) * 10;
-      return s + it + lt;
-    }, 0);
-    document.getElementById('metrics').innerHTML = [
-      {n: data.length + '명', l:'3.3% 대상 인원'},
-      {n: totalAmt.toLocaleString() + '원', l:'지급총액 합계'},
-      {n: totalTax.toLocaleString() + '원', l:'세액 합계'},
-    ].map(m => `<div class="metric"><div class="mn">${m.n}</div><div class="ml">${m.l}</div></div>`).join('');
-
-    // 경고
-    const allWarns = [...warns];
-    if (skipped4dae > 0) allWarns.unshift(`__4dae__4대보험 직원 ${skipped4dae}명 자동 제외 — 3.3% 대상자만 추출`);
-    document.getElementById('warns').innerHTML = allWarns.map(w => {
-      const is4d = w.startsWith('__4dae__');
-      const msg = is4d ? w.replace('__4dae__','') : w;
-      return `<div style="background:${is4d?'#eff6ff':'#fffbeb'};border:1px solid ${is4d?'#93c5fd':'#fcd34d'};border-radius:8px;padding:10px 12px;font-size:12px;color:${is4d?'#1e40af':'#92400e'};margin-top:8px">${is4d?'ℹ️':'⚠️'} ${msg}</div>`;
-    }).join('');
-
-    document.getElementById('result-box').style.display = 'block';
-
-  } catch(e) {
-    errDiv.innerHTML = `<div class="err-box">❌ ${e.message}</div>`;
+function findCol(header, candidates) {
+  for (const c of candidates) {
+    const idx = header.findIndex(h => String(h || '').toLowerCase().includes(c));
+    if (idx >= 0) return idx;
   }
-
-  btn.disabled = false;
-  spinner.style.display = 'none';
-  btnText.textContent = '변환하기';
-  checkReady();
+  return -1;
 }
+
+function parseExcel(file, isPost, cb) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    if (rows.length < 2) { cb([]); return; }
+    const hdr = rows[0].map(h => String(h || '').trim());
+    const ni = findCol(hdr, ['성명','이름','name']);
+    const ri = findCol(hdr, ['주민등록번호','주민번호','rrn','ssn','주민','법인번호']);
+    let pi;
+    if (isPost) {
+      pi = findCol(hdr, ['차인지급액','세후','실지급','net','실수령']);
+      if (pi < 0) pi = findCol(hdr, ['급여','지급액','금액','사업소득','pay','amount']);
+    } else {
+      pi = findCol(hdr, ['급여','지급액','금액','사업소득','pay','amount','지급금액','세전']);
+    }
+    const data = rows.slice(1).filter(r => r[ni > -1 ? ni : 0]).map((r, i) => ({
+      row: i + 2,
+      name: String(r[ni > -1 ? ni : 0] || '').trim(),
+      rrn:  String(r[ri > -1 ? ri : 1] || '').replace(/[-\s]/g, ''),
+      pay:  Math.round(Number(String(r[pi > -1 ? pi : 2] || '').replace(/[,원\s]/g, '')) || 0)
+    }));
+    cb(data);
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function parseKakao(text) {
+  const lines = text.trim().split(/\n/).filter(l => l.trim());
+  return lines.map((line, i) => {
+    const tokens = line.trim().split(/[\s,\t]+/);
+    let name = '', rrn = '', pay = 0;
+    for (const t of tokens) {
+      const clean = t.replace(/[-\s]/g, '');
+      if (/^\d{13}$/.test(clean)) { rrn = clean; continue; }
+      const num = Number(t.replace(/[,원]/g, ''));
+      if (!isNaN(num) && num >= 10000) { pay = Math.round(num); continue; }
+      if (t.length >= 2 && t.length <= 6 && /^[가-힣a-zA-Z]+$/.test(t)) { name = t; continue; }
+    }
+    if (!name && tokens.length > 0) name = tokens[0];
+    return { row: i + 1, name, rrn, pay };
+  }).filter(r => r.name || r.rrn || r.pay);
+}
+
+function validateRRN(rrn) {
+  const r = rrn.replace(/[-\s]/g, '');
+  if (!/^\d{13}$/.test(r)) return { ok: false, type: '자릿수 오류 (13자리 아님)' };
+  const mm = parseInt(r.slice(2, 4)), dd = parseInt(r.slice(4, 6));
+  if (mm < 1 || mm > 12) return { ok: false, type: '생년월일 오류 (월 범위)' };
+  if (dd < 1 || dd > 31) return { ok: false, type: '생년월일 오류 (일 범위)' };
+  const w = [2,3,4,5,6,7,8,9,2,3,4];
+  let s = 0;
+  for (let i = 0; i < 11; i++) s += parseInt(r[i]) * w[i];
+  if (parseInt(r[12]) !== (11 - (s % 11)) % 10) return { ok: false, type: '검증번호 불일치 (체크섬)' };
+  return { ok: true, type: '' };
+}
+
+function calcTax(gross, rate) {
+  const incomeTax = Math.floor(gross * rate);
+  const localTax  = Math.floor(incomeTax * 0.1);
+  const totalDed  = incomeTax + localTax;
+  const net       = gross - totalDed;
+  return { incomeTax, localTax, totalDed, net };
+}
+
+function grossFromNet(net, rate) {
+  return Math.round(net / (1 - rate * 1.1));
+}
+
+function maskRRN(rrn) {
+  return rrn.length === 13 ? rrn.slice(0, 6) + '-' + rrn[6] + '●●●●●●' : (rrn || '(없음)');
+}
+
+function doConvert() {
+  const rate = parseFloat(document.getElementById('tax-rate').value);
+  function process(rows) {
+    resultRows = rows.map(r => {
+      let gross = r.pay;
+      if (currentTab === 'post') gross = grossFromNet(r.pay, rate);
+      const tax = calcTax(gross, rate);
+      const v   = validateRRN(r.rrn);
+      return { ...r, gross, ...tax, valid: v.ok, errType: v.type };
+    });
+    renderResult();
+  }
+  if (currentTab === 'kakao') {
+    const txt = document.getElementById('kakao-text').value;
+    if (!txt.trim()) { alert('카톡 내용을 붙여넣어 주세요.'); return; }
+    process(parseKakao(txt));
+  } else {
+    const fid = currentTab === 'pre' ? 'file-pre' : 'file-post';
+    const f   = document.getElementById(fid).files[0];
+    if (!f) { alert('파일을 선택해 주세요.'); return; }
+    parseExcel(f, currentTab === 'post', process);
+  }
+}
+
+function renderResult() {
+  const errTbody     = document.getElementById('err-tbody');
+  const previewTbody = document.getElementById('preview-tbody');
+  errTbody.innerHTML = ''; previewTbody.innerHTML = '';
+  let ok = 0, err = 0;
+  resultRows.forEach(r => r.valid ? ok++ : err++);
+  document.getElementById('s-total').textContent = resultRows.length;
+  document.getElementById('s-ok').textContent    = ok;
+  document.getElementById('s-err').textContent   = err;
+  document.getElementById('s-warn').textContent  = 0;
+  resultRows.filter(r => !r.valid).forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.row}</td><td>${r.name}</td><td style="font-family:monospace;font-size:11px">${maskRRN(r.rrn)}</td><td><span class="tag tag-err">${r.errType}</span></td>`;
+    errTbody.appendChild(tr);
+  });
+  document.getElementById('err-area').style.display = err > 0 ? 'block' : 'none';
+  document.getElementById('ok-msg').style.display   = err === 0 ? 'block' : 'none';
+  resultRows.slice(0, 5).forEach(r => {
+    const tr = document.createElement('tr');
+    if (!r.valid) tr.className = 'row-err';
+    tr.innerHTML = `<td>${r.name}</td><td style="font-family:monospace;font-size:10px">${maskRRN(r.rrn)}</td><td style="text-align:right">${r.gross.toLocaleString()}</td><td style="text-align:right">${r.incomeTax.toLocaleString()}</td><td style="text-align:right">${r.localTax.toLocaleString()}</td><td style="text-align:right">${r.net.toLocaleString()}</td><td><span class="tag ${r.valid ? 'tag-ok' : 'tag-err'}">${r.valid ? '정상' : '오류'}</span></td>`;
+    previewTbody.appendChild(tr);
+  });
+  const dl = document.getElementById('btn-dl');
+  dl.style.display = 'block';
+  if (err > 0) { dl.textContent = '⚠️ 오류 있음 — 그래도 다운로드 (xlsx)'; dl.className = 'btn-dl btn-dl-warn'; }
+  else         { dl.textContent = '📥 위하고 양식 다운로드 (xlsx)'; dl.className = 'btn-dl'; }
+  document.getElementById('result-wrap').style.display = 'block';
+  document.getElementById('result-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function doDownload() {
+  const rate     = parseFloat(document.getElementById('tax-rate').value);
+  const am       = document.getElementById('attr-month').value || '';
+  const pd       = document.getElementById('pay-date').value || '';
+  const itEl     = document.getElementById('income-type');
+  const itv      = itEl.value;
+  const itl      = itEl.options[itEl.selectedIndex].text;
+  const nat      = document.getElementById('national').value;
+  const srcLabel = currentTab === 'pre' ? '세전엑셀' : currentTab === 'post' ? '세후엑셀' : '카톡문자';
+  const hdr = ['귀속년월','지급년월일','소득구분코드','소득구분명','내외국인','성명','주민등록번호','지급액(세전)','소득세','지방소득세','공제계','차인지급액','입력방식','주민번호검증'];
+  const body = resultRows.map(r => [
+    am.replace('-',''), pd.replace(/-/g,''), itv, itl, nat,
+    r.name,
+    r.rrn.length === 13 ? r.rrn.slice(0,6) + '-' + r.rrn.slice(6) : r.rrn,
+    r.gross, r.incomeTax, r.localTax, r.totalDed, r.net,
+    srcLabel,
+    r.valid ? '정상' : '오류: ' + r.errType
+  ]);
+  const ws = XLSX.utils.aoa_to_sheet([hdr, ...body]);
+  ws['!cols'] = [10,10,12,14,6,10,16,12,8,8,8,12,8,20].map(wch => ({ wch }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, '사업소득자료입력');
+  XLSX.writeFile(wb, '위하고_사업소득_' + am + '.xlsx');
+}
+
+document.getElementById('file-pre').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) { const el = document.getElementById('fname-pre'); el.textContent = '선택된 파일: ' + f.name; el.style.display = 'block'; }
+});
+document.getElementById('file-post').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (f) { const el = document.getElementById('fname-post'); el.textContent = '선택된 파일: ' + f.name; el.style.display = 'block'; }
+});
 </script>
 </body>
 </html>
