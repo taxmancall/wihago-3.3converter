@@ -15,6 +15,7 @@
     --green-bg:#f0fdf4;--green-text:#15803d;--green-border:#bbf7d0;
     --red-bg:#fff1f1;--red-text:#b91c1c;--red-border:#fecaca;
     --amber-bg:#fffbeb;--amber-text:#b45309;--amber-border:#fde68a;
+    --purple-bg:#f5f3ff;--purple-text:#6d28d9;--purple-border:#ddd6fe;
     --radius:10px;--radius-sm:6px;
     --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
   }
@@ -29,9 +30,10 @@
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
   label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px}
-  input[type=text],input[type=month],input[type=date],select,textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
-  input:focus,select:focus,textarea:focus{border-color:var(--blue-text);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
-  textarea{resize:vertical;min-height:110px;font-family:'Courier New',monospace;font-size:12px;line-height:1.6}
+  input[type=text],input[type=month],input[type=date],select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
+  input:focus,select:focus{border-color:var(--blue-text);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
+  textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;resize:vertical;min-height:110px;font-family:'Courier New',monospace;font-size:12px;line-height:1.6}
+  textarea:focus{border-color:var(--blue-text);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
   .tab-group{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
   .tab-btn{padding:12px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;text-align:center;transition:all .12s}
   .tab-btn:hover{background:var(--bg);border-color:var(--border2)}
@@ -48,10 +50,12 @@
   .info-box{padding:8px 12px;border-radius:var(--radius-sm);font-size:12px;line-height:1.6;margin-top:10px}
   .info-blue{background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border)}
   .info-amber{background:var(--amber-bg);color:var(--amber-text);border:1px solid var(--amber-border)}
+  .info-purple{background:var(--purple-bg);color:var(--purple-text);border:1px solid var(--purple-border)}
   .hdr-detect{font-size:11px;color:var(--green-text);margin-top:6px;padding:4px 8px;background:var(--green-bg);border-radius:4px;display:none}
   .kakao-hint{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;font-family:'Courier New',monospace;color:var(--text2);line-height:1.8;margin-bottom:8px}
   .btn-convert{width:100%;padding:12px;background:var(--blue-text);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:4px;transition:opacity .15s}
   .btn-convert:hover{opacity:.88}
+  .btn-convert:disabled{opacity:.5;cursor:not-allowed}
   .btn-dl{width:100%;padding:11px;border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:10px;background:var(--green-bg);color:var(--green-text);display:none;transition:opacity .15s}
   .btn-dl:hover{opacity:.85}
   .btn-dl-warn{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
@@ -77,6 +81,37 @@
   .err-title{font-size:12px;font-weight:500;color:var(--red-text);margin-bottom:6px;margin-top:14px}
   .ok-msg{font-size:12px;color:var(--green-text);margin-top:8px;display:none}
   .divider{height:1px;background:var(--border);margin:16px 0 12px}
+
+  /* AI 매핑 모달 */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;display:none}
+  .modal-overlay.show{display:flex}
+  .modal{background:var(--surface);border-radius:var(--radius);padding:24px;width:92%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
+  .modal-title{font-size:16px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .modal-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
+  .ai-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--purple-bg);color:var(--purple-text);border:1px solid var(--purple-border);border-radius:20px;font-size:11px;font-weight:600}
+  .map-row{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:center;margin-bottom:10px}
+  .map-label{font-size:12px;font-weight:500;color:var(--text2)}
+  .map-select{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);outline:none}
+  .map-select:focus{border-color:var(--blue-text)}
+  .map-select.ai-found{border-color:var(--green-text);background:var(--green-bg)}
+  .map-select.ai-notfound{border-color:var(--amber-text);background:var(--amber-bg)}
+  .sample-preview{margin-top:14px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+  .sample-preview-title{font-size:11px;font-weight:500;color:var(--text2);padding:7px 10px;background:var(--surface2);border-bottom:1px solid var(--border)}
+  .sample-scroll{overflow-x:auto;max-height:160px;}
+  .sample-table{font-size:11px;border-collapse:collapse;min-width:100%}
+  .sample-table th{padding:5px 10px;background:var(--surface2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;text-align:left}
+  .sample-table td{padding:4px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
+  .sample-table .col-hi{background:rgba(26,86,219,.08);font-weight:500}
+  .modal-actions{display:flex;gap:8px;margin-top:18px}
+  .btn-modal-ok{flex:1;padding:10px;background:var(--blue-text);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
+  .btn-modal-cancel{padding:10px 16px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer}
+
+  /* AI 로딩 */
+  .ai-loading{display:none;align-items:center;gap:10px;padding:10px 12px;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:var(--radius-sm);font-size:12px;color:var(--purple-text);margin-top:8px}
+  .ai-loading.show{display:flex}
+  .spinner{width:14px;height:14px;border:2px solid var(--purple-border);border-top-color:var(--purple-text);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
   @media(max-width:520px){.grid3{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
@@ -84,7 +119,7 @@
 <div class="page">
   <div class="header">
     <h1>위하고 사업소득 변환기</h1>
-    <p>거래처 급여 데이터 → 위하고 SmartA 사업소득자료입력 양식 · 주민번호 4단계 검증</p>
+    <p>거래처 급여 데이터 → 위하고 SmartA 사업소득자료입력 양식 · AI 컬럼 자동 인식 · 주민번호 4단계 검증</p>
   </div>
 
   <div class="card">
@@ -144,10 +179,13 @@
         <div style="font-size:11px;margin-top:3px">xlsx · xls · csv 지원</div>
       </div>
       <div id="fname-pre" class="fname"></div>
+      <div id="ai-loading-pre" class="ai-loading">
+        <div class="spinner"></div>
+        <span>AI가 컬럼 구조를 파악하는 중...</span>
+      </div>
       <div id="hdr-pre" class="hdr-detect"></div>
-      <div class="info-box info-blue">
-        병합셀/타이틀 행 자동 건너뜀 · 성함·성명·이름·관리사 → 성명 인식 · 세전급여·급여·지급액 → 급여 인식<br>
-        입사일·퇴사일·이용산모 등 불필요 컬럼은 자동 무시합니다.
+      <div class="info-box info-purple" style="margin-top:10px">
+        🤖 <strong>AI 컬럼 자동 인식</strong> — 파일 업로드 시 AI가 헤더를 분석해 성명·주민번호·급여 컬럼을 자동으로 찾아줍니다. 확인 후 변환합니다.
       </div>
     </div>
 
@@ -159,8 +197,12 @@
         <div style="font-size:11px;margin-top:3px">xlsx · xls · csv 지원</div>
       </div>
       <div id="fname-post" class="fname"></div>
+      <div id="ai-loading-post" class="ai-loading">
+        <div class="spinner"></div>
+        <span>AI가 컬럼 구조를 파악하는 중...</span>
+      </div>
       <div id="hdr-post" class="hdr-detect"></div>
-      <div class="info-box info-amber">
+      <div class="info-box info-amber" style="margin-top:10px">
         <strong>세후 역산 공식:</strong> 세전 = 세후 ÷ (1 − 세율 × 1.1)<br>
         예) 세후 967,000원 → 세전 1,000,000원 (3.3% 기준)
       </div>
@@ -177,7 +219,7 @@
     </div>
   </div>
 
-  <button class="btn-convert" onclick="doConvert()">변환 및 주민번호 검증 실행</button>
+  <button class="btn-convert" id="btn-convert" onclick="doConvert()">변환 및 주민번호 검증 실행</button>
 
   <div class="result-wrap" id="result-wrap">
     <div class="divider"></div>
@@ -217,21 +259,57 @@
   </div>
 </div>
 
+<!-- AI 컬럼 매핑 확인 모달 -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">
+      <span class="ai-badge">🤖 AI</span>
+      컬럼 매핑 확인
+    </div>
+    <div class="modal-sub" id="modal-sub">AI가 아래와 같이 컬럼을 인식했습니다. 확인 후 변환을 진행하세요.</div>
+
+    <div class="map-row">
+      <div class="map-label">👤 성명</div>
+      <select class="map-select" id="map-name"></select>
+    </div>
+    <div class="map-row">
+      <div class="map-label">🪪 주민번호</div>
+      <select class="map-select" id="map-rrn"></select>
+    </div>
+    <div class="map-row">
+      <div class="map-label">💰 급여액</div>
+      <select class="map-select" id="map-pay"></select>
+    </div>
+
+    <div class="sample-preview">
+      <div class="sample-preview-title">샘플 데이터 미리보기 (상위 3행)</div>
+      <div class="sample-scroll">
+        <table class="sample-table" id="sample-table"></table>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-modal-ok" onclick="confirmMapping()">✓ 이 매핑으로 변환하기</button>
+    </div>
+  </div>
+</div>
+
 <script>
 let currentTab = 'pre';
 let resultRows = [];
+let pendingParsedRows = null;  // 엑셀 전체 rows (헤더 이후)
+let pendingAllRows = null;     // 전체 raw rows
+let pendingHdrIdx = null;
+let pendingHeaders = null;
+let pendingIsPost = false;
 
-// ── 컬럼 매핑 규칙 ──────────────────────────────────────────
-// 성명 계열: 성함·성명·이름·관리사·직원명·근로자명
-const NAME_KW = ['성함','성명','이름','관리사','직원명','근로자명','담당자','소득자명','소득자'];
-// 주민번호 계열
-const RRN_KW  = ['주민등록번호','주민번호','rrn','ssn','주민(외국인)번호','주민(외국인)등록번호'];
-// 급여 계열 (세전 우선)
+// ── 키워드 fallback ──────────────────────────────────────────
+const NAME_KW     = ['성함','성명','이름','관리사','직원명','근로자명','담당자','소득자명','소득자'];
+const RRN_KW      = ['주민등록번호','주민번호','rrn','ssn','주민(외국인)번호','주민(외국인)등록번호'];
 const PAY_PRE_KW  = ['세전급여','세전 급여','세전지급','최종지급액','총근로임금','총 근로임금','급여액','급여','지급액','금액','사업소득','pay','amount'];
-// 세후 급여 계열
 const PAY_POST_KW = ['최종지급액','차인지급액','세후급여','세후 급여','실지급액','실지급','실수령','net'];
-// 완전 무시할 컬럼 키워드
-const SKIP_KW = ['입사일','퇴사일','이용산모','생년월일','연락처','전화','메모','비고','비과세','4대보험','국민연금','건강보험','고용보험','산재','장기요양','소득세','지방세','공제'];
+const SKIP_ROWS   = ['합계','소계','합 계','소 계','계','total','subtotal',''];
 
 function switchTab(t) {
   currentTab = t;
@@ -241,7 +319,7 @@ function switchTab(t) {
   });
 }
 
-function findCol(header, candidates) {
+function findColByKw(header, candidates) {
   for (const c of candidates) {
     const idx = header.findIndex(h => String(h||'').toLowerCase().replace(/\s/g,'').includes(c.replace(/\s/g,'')));
     if (idx >= 0) return idx;
@@ -249,23 +327,19 @@ function findCol(header, candidates) {
   return -1;
 }
 
-// 헤더 행 자동 탐색: 상위 20행 중 성명+주민번호 키워드 동시 포함 행
 function detectHeaderRow(rows) {
-  // 1순위: 성명+주민번호 키워드 둘 다 있는 행
   for (let i = 0; i < Math.min(rows.length, 20); i++) {
     const row = rows[i].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
     const hasName = row.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))));
     const hasRRN  = row.some(c => RRN_KW.some(k  => c.includes(k.replace(/\s/g,''))));
     if (hasName && hasRRN) return i;
   }
-  // 2순위: 귀속년월 + 소득자명 조합 (위하고 양식 헤더 패턴)
   for (let i = 0; i < Math.min(rows.length, 20); i++) {
     const row = rows[i].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
     const hasAttr = row.some(c => c.includes('귀속년월') || c.includes('귀속월'));
     const hasName = row.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))));
     if (hasAttr && hasName) return i;
   }
-  // 3순위: 성명 키워드만 있어도 헤더로
   for (let i = 0; i < Math.min(rows.length, 20); i++) {
     const row = rows[i].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
     if (row.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))))) return i;
@@ -273,24 +347,166 @@ function detectHeaderRow(rows) {
   return 0;
 }
 
-// 데이터 행 필터: 합계·소계·빈행 제외
-const SKIP_ROWS = ['합계','소계','합 계','소 계','계','total','subtotal',''];
 function isDataRow(nameVal) {
   const v = String(nameVal||'').trim().toLowerCase();
   return v && !SKIP_ROWS.includes(v);
 }
 
-function parseExcel(file, isPost, hdrElId, cb) {
+// ── AI 컬럼 매핑 ──────────────────────────────────────────────
+async function aiMapColumns(headers, sampleRows, isPost) {
+  const payLabel = isPost ? '세후 실지급액(차인지급액)' : '세전 지급액(급여)';
+  const prompt = `당신은 한국 세무 소프트웨어의 엑셀 컬럼 분석 전문가입니다.
+
+아래는 업로드된 엑셀 파일의 헤더와 샘플 데이터입니다.
+
+헤더: ${JSON.stringify(headers)}
+
+샘플 데이터(상위 5행):
+${sampleRows.slice(0,5).map((r,i) => `행${i+1}: ${JSON.stringify(r)}`).join('\n')}
+
+다음 3가지 컬럼의 인덱스(0부터 시작)를 찾아주세요:
+1. 성명(이름): 사람 이름이 들어있는 컬럼
+2. 주민등록번호: 13자리 주민번호가 들어있는 컬럼
+3. 급여액(${payLabel}): 숫자로 된 금액 컬럼
+
+반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 절대 포함하지 마세요:
+{"name_col": <인덱스 또는 null>, "rrn_col": <인덱스 또는 null>, "pay_col": <인덱스 또는 null>, "reason": "<한 줄 설명>"}
+
+찾지 못한 경우 null로 응답하세요.`;
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await resp.json();
+    const text = data.content?.find(b => b.type==='text')?.text || '';
+    const clean = text.replace(/```json|```/g,'').trim();
+    return JSON.parse(clean);
+  } catch(e) {
+    console.error('AI 매핑 실패:', e);
+    return null;
+  }
+}
+
+// ── 모달 표시 ──────────────────────────────────────────────
+function showMappingModal(headers, sampleRows, aiResult, isPost) {
+  // select 옵션 생성
+  const makeOptions = (selIdx) => {
+    let opts = '<option value="-1">-- 해당 없음 --</option>';
+    headers.forEach((h, i) => {
+      const selected = i === selIdx ? 'selected' : '';
+      opts += `<option value="${i}" ${selected}>${h || '(빈 헤더)'}</option>`;
+    });
+    return opts;
+  };
+
+  const nameIdx = aiResult?.name_col ?? -1;
+  const rrnIdx  = aiResult?.rrn_col  ?? -1;
+  const payIdx  = aiResult?.pay_col  ?? -1;
+
+  document.getElementById('map-name').innerHTML = makeOptions(nameIdx);
+  document.getElementById('map-rrn').innerHTML  = makeOptions(rrnIdx);
+  document.getElementById('map-pay').innerHTML  = makeOptions(payIdx);
+
+  // AI 매핑 결과에 따라 색상
+  ['map-name','map-rrn','map-pay'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    const val = [nameIdx, rrnIdx, payIdx][i];
+    el.className = 'map-select ' + (val >= 0 ? 'ai-found' : 'ai-notfound');
+    el.addEventListener('change', () => {
+      el.className = 'map-select ' + (parseInt(el.value) >= 0 ? 'ai-found' : 'ai-notfound');
+    });
+  });
+
+  // reason 표시
+  if (aiResult?.reason) {
+    document.getElementById('modal-sub').textContent = `🤖 AI 분석: ${aiResult.reason}`;
+  }
+
+  // 샘플 테이블
+  const tbl = document.getElementById('sample-table');
+  const hiCols = new Set([nameIdx, rrnIdx, payIdx].filter(v => v >= 0));
+  let html = '<thead><tr>';
+  headers.forEach((h, i) => {
+    html += `<th class="${hiCols.has(i)?'col-hi':''}">${h||'(빈 헤더)'}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+  sampleRows.slice(0,3).forEach(r => {
+    html += '<tr>';
+    headers.forEach((_, i) => {
+      html += `<td class="${hiCols.has(i)?'col-hi':''}">${String(r[i]??'')}</td>`;
+    });
+    html += '</tr>';
+  });
+  html += '</tbody>';
+  tbl.innerHTML = html;
+
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+  pendingParsedRows = null;
+}
+
+function confirmMapping() {
+  const ni = parseInt(document.getElementById('map-name').value);
+  const ri = parseInt(document.getElementById('map-rrn').value);
+  const pi = parseInt(document.getElementById('map-pay').value);
+
+  document.getElementById('modal-overlay').classList.remove('show');
+
+  if (!pendingAllRows || pendingHdrIdx === null) return;
+
+  // 확정된 컬럼 인덱스로 데이터 추출
+  const colHdrIdx = pendingHdrIdx;
+  const dataRows = pendingAllRows.slice(colHdrIdx + 1);
+  const isPost = pendingIsPost;
+
+  let lastName = '', lastRRN = '';
+  const data = [];
+  dataRows.forEach((r, i) => {
+    const rawName = ni >= 0 ? String(r[ni]||'').trim() : '';
+    const rawRRN  = ri >= 0 ? String(r[ri]||'').replace(/[-\u2013\u2014\u2212\uFF0D\s]/g,'') : '';
+    const rawPay  = pi >= 0 ? Math.round(Number(String(r[pi]||'').replace(/[,원\s]/g,''))||0) : 0;
+
+    if (rawName && isDataRow(rawName)) {
+      lastName = rawName;
+      lastRRN = rawRRN || lastRRN;
+    } else if (!rawName && lastName) {
+      // 동일 관리사 추가 지급건
+    } else {
+      return;
+    }
+    if (rawRRN) lastRRN = rawRRN;
+    if (rawPay > 0 && lastName) {
+      data.push({ row: colHdrIdx + 2 + i, name: lastName, rrn: lastRRN, pay: rawPay });
+    }
+  });
+
+  processRows(data, isPost);
+}
+
+// ── 엑셀 파싱 + AI 매핑 ──────────────────────────────────────
+function parseExcelWithAI(file, isPost, hdrElId) {
+  const loadingEl = document.getElementById('ai-loading-' + (isPost ? 'post' : 'pre'));
+  loadingEl.classList.add('show');
+  document.getElementById('btn-convert').disabled = true;
+
   const reader = new FileReader();
-  reader.onload = ev => {
+  reader.onload = async ev => {
     const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'});
     const ws = wb.Sheets[wb.SheetNames[0]];
     const allRows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
 
     const hdrIdx = detectHeaderRow(allRows);
 
-    // 2행 헤더 처리: 바로 아래 행도 헤더인지 확인 (그룹헤더+컬럼헤더 구조)
-    // 실제 컬럼명이 있는 행 = hdrIdx 또는 hdrIdx+1 중 더 많은 컬럼명이 있는 행
     let colHdrIdx = hdrIdx;
     if (hdrIdx + 1 < allRows.length) {
       const row0 = allRows[hdrIdx].filter(c => String(c||'').trim()).length;
@@ -299,57 +515,53 @@ function parseExcel(file, isPost, hdrElId, cb) {
     }
     const rawHdr = allRows[colHdrIdx].map(h => String(h||'').trim());
 
-    // 감지 결과 표시
+    // 헤더 감지 결과 표시
     const hdrEl = document.getElementById(hdrElId);
     if (hdrEl) {
       hdrEl.textContent = `${colHdrIdx+1}행을 헤더로 인식 — [${rawHdr.filter(h=>h).slice(0,8).join(' | ')}]`;
       hdrEl.style.display = 'block';
     }
 
-    const ni  = findCol(rawHdr, NAME_KW);
-    const ri  = findCol(rawHdr, RRN_KW);
-    const pi  = isPost
-      ? (findCol(rawHdr, PAY_POST_KW) >= 0 ? findCol(rawHdr, PAY_POST_KW) : findCol(rawHdr, PAY_PRE_KW))
-      : findCol(rawHdr, PAY_PRE_KW);
+    // 샘플 데이터 (헤더 이후 5행)
+    const sampleRows = allRows.slice(colHdrIdx + 1, colHdrIdx + 6);
 
-    // 관리사 이름·주민번호 병합 처리
-    // 산모 2명인 경우: 성명/주민번호가 빈 행은 바로 위 행 값을 이어받음
-    let lastName = '', lastRRN = '';
-    const dataRows = allRows.slice(colHdrIdx+1);
-    const data = [];
-    dataRows.forEach((r, i) => {
-      const rawName = String(r[ni > -1 ? ni : 0]||'').trim();
-      const rawRRN  = String(r[ri > -1 ? ri : 1]||'').replace(/[-\u2013\u2014\u2212\uFF0D\s]/g,'');
-      const rawPay  = Math.round(Number(String(r[pi > -1 ? pi : 2]||'').replace(/[,원\s]/g,''))||0);
+    // 전역 저장
+    pendingAllRows = allRows;
+    pendingHdrIdx  = colHdrIdx;
+    pendingHeaders = rawHdr;
+    pendingIsPost  = isPost;
 
-      // 이름이 있으면 갱신, 없으면 이전 이름 사용 (산모 2명 케이스)
-      if (rawName && isDataRow(rawName)) {
-        lastName = rawName;
-        lastRRN  = rawRRN || lastRRN;
-      } else if (!rawName && lastName) {
-        // 이름 없는 행 = 동일 관리사 추가 지급건
-        // 아무것도 안 함 (lastName 유지)
-      } else {
-        return; // 완전 빈 행
-      }
+    // AI 호출
+    let aiResult = null;
+    try {
+      aiResult = await aiMapColumns(rawHdr, sampleRows, isPost);
+    } catch(e) {
+      console.error(e);
+    }
 
-      // 주민번호 갱신
-      if (rawRRN) lastRRN = rawRRN;
+    // AI 실패 시 키워드 fallback
+    if (!aiResult) {
+      const payKw = isPost ? PAY_POST_KW : PAY_PRE_KW;
+      aiResult = {
+        name_col: findColByKw(rawHdr, NAME_KW),
+        rrn_col:  findColByKw(rawHdr, RRN_KW),
+        pay_col:  findColByKw(rawHdr, payKw) >= 0
+                    ? findColByKw(rawHdr, payKw)
+                    : findColByKw(rawHdr, PAY_PRE_KW),
+        reason: '키워드 자동 매핑 (AI 응답 없음)'
+      };
+    }
 
-      if (rawPay > 0 && lastName) {
-        data.push({
-          row:  colHdrIdx + 2 + i,
-          name: lastName,
-          rrn:  lastRRN,
-          pay:  rawPay
-        });
-      }
-    });
-    cb(data);
+    loadingEl.classList.remove('show');
+    document.getElementById('btn-convert').disabled = false;
+
+    // 모달 표시
+    showMappingModal(rawHdr, sampleRows, aiResult, isPost);
   };
   reader.readAsArrayBuffer(file);
 }
 
+// ── 카카오 파싱 ──────────────────────────────────────────────
 function parseKakao(text) {
   return text.trim().split(/\n/).filter(l=>l.trim()).map((line,i) => {
     const tokens = line.trim().split(/[\s,\t]+/);
@@ -366,15 +578,13 @@ function parseKakao(text) {
   }).filter(r => r.name||r.rrn||r.pay);
 }
 
+// ── 검증 ──────────────────────────────────────────────────
 function validateRRN(rrn) {
   const r = rrn.replace(/[-–—−－\s]/g,'');
-  // 1단계: 자릿수
   if (!/^\d{13}$/.test(r)) return {ok:false, warn:false, type:'자릿수 오류 (13자리 아님)'};
-  // 2단계: 생년월일
   const yy=parseInt(r.slice(0,2)), mm=parseInt(r.slice(2,4)), dd=parseInt(r.slice(4,6));
   if (mm<1||mm>12) return {ok:false, warn:false, type:'생년월일 오류 (월 범위)'};
   if (dd<1||dd>31) return {ok:false, warn:false, type:'생년월일 오류 (일 범위)'};
-  // 3~4단계: 성별코드로 출생연도 계산
   const g=parseInt(r[6]);
   let by;
   if (g===1||g===2) by=1900+yy;
@@ -382,7 +592,6 @@ function validateRRN(rrn) {
   else if (g===5||g===6) by=1900+yy;
   else if (g===7||g===8) by=2000+yy;
   else by=1800+yy;
-  // 5단계: 체크섬 — 2020.10 이후 출생은 임의번호 체계로 스킵
   const isNew = by>2020||(by===2020&&mm>=10);
   if (!isNew) {
     const w=[2,3,4,5,6,7,8,9,2,3,4,5];
@@ -392,7 +601,6 @@ function validateRRN(rrn) {
   }
   return {ok:true, warn:false, type:''};
 }
-
 
 function calcTax(gross, rate) {
   const incomeTax = Math.floor(gross*rate);
@@ -408,30 +616,33 @@ function maskRRN(rrn) {
   return rrn.length===13 ? rrn.slice(0,6)+'-'+rrn[6]+'●●●●●●' : (rrn||'(없음)');
 }
 
+// ── 변환 실행 ──────────────────────────────────────────────
 function doConvert() {
-  const rate = parseFloat(document.getElementById('tax-rate').value);
-  function process(rows) {
-    resultRows = rows.map(r => {
-      let gross = r.pay;
-      if (currentTab==='post') gross = grossFromNet(r.pay, rate);
-      const tax = calcTax(gross, rate);
-      const v   = validateRRN(r.rrn);
-      return {...r, gross, ...tax, valid:v.ok, warn:v.warn, errType:v.type};
-    });
-    renderResult();
-  }
-  if (currentTab==='kakao') {
+  if (currentTab === 'kakao') {
     const txt = document.getElementById('kakao-text').value;
     if (!txt.trim()) { alert('카톡 내용을 붙여넣어 주세요.'); return; }
-    process(parseKakao(txt));
+    processRows(parseKakao(txt), false);
   } else {
-    const isPost = currentTab==='post';
+    const isPost = currentTab === 'post';
     const fid    = isPost ? 'file-post' : 'file-pre';
     const hdrId  = isPost ? 'hdr-post'  : 'hdr-pre';
     const f      = document.getElementById(fid).files[0];
     if (!f) { alert('파일을 선택해 주세요.'); return; }
-    parseExcel(f, isPost, hdrId, process);
+    parseExcelWithAI(f, isPost, hdrId);
+    // 실제 변환은 confirmMapping()에서 수행
   }
+}
+
+function processRows(rows, isPost) {
+  const rate = parseFloat(document.getElementById('tax-rate').value);
+  resultRows = rows.map(r => {
+    let gross = r.pay;
+    if (isPost) gross = grossFromNet(r.pay, rate);
+    const tax = calcTax(gross, rate);
+    const v   = validateRRN(r.rrn);
+    return {...r, gross, ...tax, valid:v.ok, warn:v.warn, errType:v.type};
+  });
+  renderResult();
 }
 
 function renderResult() {
@@ -473,34 +684,17 @@ function doDownload() {
   const pd    = document.getElementById('pay-date').value||'';
   const itEl  = document.getElementById('income-type');
   const nat   = document.getElementById('national').value;
-
   const amFmt = am.replace('-','');
   const pdFmt = pd.replace(/-/g,'');
   const rateDisplay = (rate*100).toFixed(1);
   const incomeName  = itEl.selectedIndex > 0 ? itEl.options[itEl.selectedIndex].text : '';
   const natLabel    = nat==='0' ? '0.내국인' : '1.외국인';
 
-  // 위하고 SmartA 사업소득자료입력 서식
-  // A:순번 B:귀속년월 C:지급년월일 D:소득자명 E:주민등록번호 F:기본주소 G:상세주소
-  // H:소득구분 I:영수일자 J:지급총액 K:세율(%) L:소득세 M:지방소득세 N:내.외국인구분 O:연말정산
   const titleRow = [' 사업소득자료입력','','','','','','','','','','','','','',''];
   const hdrRow   = ['','귀속년월','지급년월일','소득자명','주민등록번호','기본주소','상세주소','소득구분','영수일자','지급총액','세율(%)','소득세','지방소득세','내.외국인구분','연말정산'];
   const body = resultRows.map((r, i) => [
-    i+1,
-    amFmt,
-    pdFmt,
-    r.name,
-    r.rrn,
-    '',
-    '',
-    incomeName,
-    pdFmt,
-    r.gross,
-    rateDisplay,
-    r.incomeTax,
-    r.localTax,
-    natLabel,
-    ''
+    i+1, amFmt, pdFmt, r.name, r.rrn, '', '',
+    incomeName, pdFmt, r.gross, rateDisplay, r.incomeTax, r.localTax, natLabel, ''
   ]);
 
   const ws = XLSX.utils.aoa_to_sheet([titleRow, hdrRow, ...body]);
@@ -510,42 +704,38 @@ function doDownload() {
   XLSX.writeFile(wb, '위하고_사업소득_'+am+'.xlsx');
 }
 
-['pre','post'].forEach(id=>{
-  // 파일 input change
-  document.getElementById('file-'+id).addEventListener('change',e=>{
-    const f=e.target.files[0];
-    if(f) setFile(id, f);
+// ── 파일 이벤트 ──────────────────────────────────────────────
+['pre','post'].forEach(id => {
+  document.getElementById('file-'+id).addEventListener('change', e => {
+    const f = e.target.files[0];
+    if (f) setFile(id, f);
   });
-
-  // 드래그앤드롭
   const zone = document.getElementById('zone-'+id);
-  zone.addEventListener('dragover', e=>{
+  zone.addEventListener('dragover', e => {
     e.preventDefault();
     zone.style.borderColor='var(--blue-text)';
     zone.style.background='var(--bg)';
     zone.style.color='var(--blue-text)';
   });
-  zone.addEventListener('dragleave', e=>{
+  zone.addEventListener('dragleave', e => {
     zone.style.borderColor='';
     zone.style.background='';
     zone.style.color='';
   });
-  zone.addEventListener('drop', e=>{
+  zone.addEventListener('drop', e => {
     e.preventDefault();
     zone.style.borderColor='';
     zone.style.background='';
     zone.style.color='';
     const f = e.dataTransfer.files[0];
-    if(f) setFile(id, f);
+    if (f) setFile(id, f);
   });
 });
 
 function setFile(id, f) {
-  // file input에도 반영 (parseExcel이 files[0] 참조하므로)
   const dt = new DataTransfer();
   dt.items.add(f);
   document.getElementById('file-'+id).files = dt.files;
-
   const el = document.getElementById('fname-'+id);
   el.textContent = '선택된 파일: ' + f.name;
   el.style.display = 'block';
