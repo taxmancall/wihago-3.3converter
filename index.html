@@ -130,7 +130,7 @@
       <div>
         <label>세율</label>
         <select id="tax-rate">
-          <option value="0.033">3.3% (일반)</option>
+          <option value="0.03">3% (일반)</option>
           <option value="0.088">8.8%</option>
           <option value="0.22">22% (비거주자)</option>
         </select>
@@ -648,15 +648,15 @@ function validateRRN(rrn) {
 }
 
 function calcTax(gross, rate) {
-  // rate = 0.033 (3.3%) 기준: 소득세 3%, 지방소득세 0.3%
-  const baseRate  = rate / 1.1;                                      // 3.3% → 3%
-  const incomeTax = Math.floor(gross * baseRate / 10) * 10;          // 소득세: 세전 × 3%, 10원 미만 절사
-  const localTax  = Math.floor(gross * baseRate * 0.1 / 10) * 10;   // 지방소득세: 세전 × 0.3%, 10원 미만 절사
+  // rate = 0.03 (3%): 소득세 3%, 지방소득세 = 소득세 × 10%
+  const incomeTax = Math.floor(gross * rate / 10) * 10;              // 소득세: 세전 × 3%, 10원 미만 절사
+  const localTax  = Math.floor(incomeTax * 0.1 / 10) * 10;          // 지방소득세: 소득세 × 10%, 10원 미만 절사
   return {incomeTax, localTax, totalDed:incomeTax+localTax, net:gross-incomeTax-localTax};
 }
 
 function grossFromNet(net, rate) {
-  return Math.round(net/(1-rate*1.1));
+  // 세후 → 세전 역산: 세전 × (1 - rate - rate×0.1) = 세후
+  return Math.round(net / (1 - rate * 1.1));
 }
 
 function maskRRN(rrn) {
@@ -733,7 +733,7 @@ function doDownload() {
   const nat   = document.getElementById('national').value;
   const amFmt = am.replace('-','');
   const pdFmt = pd.replace(/-/g,'');
-  const rateDisplay = (rate*100).toFixed(1);
+  const rateDisplay = String(Math.round(rate*100));
   const incomeName  = itEl.selectedIndex > 0 ? itEl.options[itEl.selectedIndex].text : '';
   const natLabel    = nat==='0' ? '0.내국인' : '1.외국인';
 
