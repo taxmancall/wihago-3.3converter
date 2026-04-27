@@ -3,790 +3,734 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>위하고 사업소득 변환기</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<title>위하고 사업소득 변환기 v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg:#f5f5f3;--surface:#fff;--surface2:#f9f9f8;--border:#e4e4e0;--border2:#d0d0cc;
-    --text:#1a1a18;--text2:#6b6b68;--text3:#9b9b98;
-    --blue-bg:#eef4ff;--blue-text:#1a56db;--blue-border:#c3d4f8;
-    --green-bg:#f0fdf4;--green-text:#15803d;--green-border:#bbf7d0;
-    --red-bg:#fff1f1;--red-text:#b91c1c;--red-border:#fecaca;
-    --amber-bg:#fffbeb;--amber-text:#b45309;--amber-border:#fde68a;
-    --purple-bg:#f5f3ff;--purple-text:#6d28d9;--purple-border:#ddd6fe;
-    --radius:10px;--radius-sm:6px;
-    --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
-  }
-  body{font-family:'Pretendard',-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;min-height:100vh}
-  .page{max-width:760px;margin:0 auto;padding:32px 20px 60px}
-  .header{margin-bottom:28px}
-  .header h1{font-size:22px;font-weight:600;margin-bottom:4px}
-  .header p{font-size:13px;color:var(--text2)}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;box-shadow:var(--shadow)}
-  .sec-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-  .sec-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--blue-bg);color:var(--blue-text);font-size:11px;font-weight:600;flex-shrink:0}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
-  label{display:block;font-size:11px;font-weight:500;color:var(--text2);margin-bottom:4px}
-  input[type=text],input[type=month],input[type=date],select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s}
-  input:focus,select:focus{border-color:var(--blue-text);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
-  textarea{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color .15s;resize:vertical;min-height:110px;font-family:'Courier New',monospace;font-size:12px;line-height:1.6}
-  textarea:focus{border-color:var(--blue-text);box-shadow:0 0 0 3px rgba(26,86,219,.08)}
-  .tab-group{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px}
-  .tab-btn{padding:12px 8px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text2);font-size:12px;font-weight:500;font-family:inherit;cursor:pointer;text-align:center;transition:all .12s}
-  .tab-btn:hover{background:var(--bg);border-color:var(--border2)}
-  .tab-btn.active{background:var(--blue-bg);color:var(--blue-text);border-color:var(--blue-border)}
-  .tab-icon{font-size:18px;display:block;margin-bottom:4px}
-  .tab-sub{font-size:10px;opacity:.75;display:block;margin-top:2px}
-  .input-panel{display:none}
-  .input-panel.show{display:block}
-  .upload-zone{border:1.5px dashed var(--border2);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;color:var(--text2);font-size:13px;background:var(--surface2);transition:all .15s}
-  .upload-zone:hover{background:var(--bg);border-color:var(--blue-text);color:var(--blue-text)}
-  .upload-zone input[type=file]{display:none}
-  .upload-icon{font-size:28px;display:block;margin-bottom:6px}
-  .fname{font-size:11px;color:var(--text2);margin-top:6px;padding:4px 8px;background:var(--surface2);border-radius:4px;display:none}
-  .info-box{padding:8px 12px;border-radius:var(--radius-sm);font-size:12px;line-height:1.6;margin-top:10px}
-  .info-blue{background:var(--blue-bg);color:var(--blue-text);border:1px solid var(--blue-border)}
-  .info-amber{background:var(--amber-bg);color:var(--amber-text);border:1px solid var(--amber-border)}
-  .info-purple{background:var(--purple-bg);color:var(--purple-text);border:1px solid var(--purple-border)}
-  .hdr-detect{font-size:11px;color:var(--green-text);margin-top:6px;padding:4px 8px;background:var(--green-bg);border-radius:4px;display:none}
-  .kakao-hint{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;font-family:'Courier New',monospace;color:var(--text2);line-height:1.8;margin-bottom:8px}
-  .btn-convert{width:100%;padding:12px;background:var(--blue-text);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:4px;transition:opacity .15s}
-  .btn-convert:hover{opacity:.88}
-  .btn-convert:disabled{opacity:.5;cursor:not-allowed}
-  .btn-dl{width:100%;padding:11px;border:1.5px solid var(--green-border);border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:10px;background:var(--green-bg);color:var(--green-text);display:none;transition:opacity .15s}
-  .btn-dl:hover{opacity:.85}
-  .btn-dl-warn{background:var(--amber-bg);color:var(--amber-text);border-color:var(--amber-border)}
-  .result-wrap{display:none;margin-top:4px}
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
-  .stat{background:var(--surface2);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;border:1px solid var(--border)}
-  .stat-n{font-size:22px;font-weight:600;color:var(--text)}
-  .stat-l{font-size:10px;color:var(--text3);margin-top:2px}
-  .c-ok .stat-n{color:var(--green-text)}
-  .c-err .stat-n{color:var(--red-text)}
-  .tbl-scroll{max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm)}
-  table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
-  thead th{position:sticky;top:0;text-align:left;padding:7px 10px;background:var(--surface2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;font-size:11px}
-  tbody td{padding:6px 10px;border-bottom:1px solid var(--border);color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  tbody tr:last-child td{border-bottom:none}
-  tbody tr:hover td{background:var(--surface2)}
-  .row-err td{background:#fff8f8}
-  .row-err:hover td{background:#fff1f1}
-  .tag{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:500}
-  .tag-ok{background:var(--green-bg);color:var(--green-text)}
-  .tag-err{background:var(--red-bg);color:var(--red-text)}
-  .tag-warn{background:var(--amber-bg);color:var(--amber-text)}
-  .err-title{font-size:12px;font-weight:500;color:var(--red-text);margin-bottom:6px;margin-top:14px}
-  .ok-msg{font-size:12px;color:var(--green-text);margin-top:8px;display:none}
-  .divider{height:1px;background:var(--border);margin:16px 0 12px}
+:root {
+  --bg: #f5f4f0;
+  --surface: #ffffff;
+  --surface2: #f9f8f5;
+  --border: #e2e0d8;
+  --border2: #d0cec6;
+  --text: #1a1916;
+  --text2: #6b6860;
+  --text3: #9e9c96;
+  --blue: #1a56db;
+  --blue-light: #e8f0fe;
+  --blue-dark: #1040b0;
+  --green: #0f7a4a;
+  --green-light: #e6f5ee;
+  --red: #c0392b;
+  --red-light: #fdf0ee;
+  --amber: #b45309;
+  --amber-light: #fffbeb;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+}
 
-  /* AI 매핑 모달 */
-  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000;display:none}
-  .modal-overlay.show{display:flex}
-  .modal{background:var(--surface);border-radius:var(--radius);padding:24px;width:92%;max-width:560px;box-shadow:0 20px 60px rgba(0,0,0,.2);max-height:90vh;overflow-y:auto}
-  .modal-title{font-size:16px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-  .modal-sub{font-size:12px;color:var(--text2);margin-bottom:18px}
-  .ai-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--purple-bg);color:var(--purple-text);border:1px solid var(--purple-border);border-radius:20px;font-size:11px;font-weight:600}
-  .map-row{display:grid;grid-template-columns:90px 1fr;gap:10px;align-items:center;margin-bottom:10px}
-  .map-label{font-size:12px;font-weight:500;color:var(--text2)}
-  .map-select{width:100%;padding:7px 10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;background:var(--surface);color:var(--text);outline:none}
-  .map-select:focus{border-color:var(--blue-text)}
-  .map-select.ai-found{border-color:var(--green-text);background:var(--green-bg)}
-  .map-select.ai-notfound{border-color:var(--amber-text);background:var(--amber-bg)}
-  .sample-preview{margin-top:14px;border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
-  .sample-preview-title{font-size:11px;font-weight:500;color:var(--text2);padding:7px 10px;background:var(--surface2);border-bottom:1px solid var(--border)}
-  .sample-scroll{overflow-x:auto;max-height:160px;}
-  .sample-table{font-size:11px;border-collapse:collapse;min-width:100%}
-  .sample-table th{padding:5px 10px;background:var(--surface2);color:var(--text2);font-weight:500;border-bottom:1px solid var(--border);white-space:nowrap;text-align:left}
-  .sample-table td{padding:4px 10px;border-bottom:1px solid var(--border);white-space:nowrap}
-  .sample-table .col-hi{background:rgba(26,86,219,.08);font-weight:500}
-  .modal-actions{display:flex;gap:8px;margin-top:18px}
-  .btn-modal-ok{flex:1;padding:10px;background:var(--blue-text);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;font-family:inherit;cursor:pointer}
-  .btn-modal-cancel{padding:10px 16px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:inherit;cursor:pointer}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  /* AI 로딩 */
-  .ai-loading{display:none;align-items:center;gap:10px;padding:10px 12px;background:var(--purple-bg);border:1px solid var(--purple-border);border-radius:var(--radius-sm);font-size:12px;color:var(--purple-text);margin-top:8px}
-  .ai-loading.show{display:flex}
-  .spinner{width:14px;height:14px;border:2px solid var(--purple-border);border-top-color:var(--purple-text);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
-  @keyframes spin{to{transform:rotate(360deg)}}
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  line-height: 1.6;
+}
 
-  @media(max-width:520px){.grid3{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+/* ─── Header ─── */
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 32px; height: 32px;
+  background: var(--blue);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 16px; font-weight: 600;
+}
+.logo-text { font-size: 15px; font-weight: 600; }
+.logo-badge {
+  font-size: 10px; font-weight: 600; padding: 2px 7px;
+  background: var(--blue-light); color: var(--blue);
+  border-radius: 9999px;
+}
+.header-right { font-size: 12px; color: var(--text3); }
+
+/* ─── Layout ─── */
+.container { max-width: 860px; margin: 0 auto; padding: 24px 20px 48px; }
+
+/* ─── Step card ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  transition: box-shadow .15s;
+}
+.card.hidden { display: none; }
+
+.card-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.step-num {
+  width: 22px; height: 22px;
+  background: var(--blue);
+  color: #fff; border-radius: 50%;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.card-title { font-size: 14px; font-weight: 600; }
+.card-hint { font-size: 12px; color: var(--text3); margin-left: auto; }
+
+/* ─── Grid form ─── */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 11px; font-weight: 500; color: var(--text2); }
+input[type=text], input[type=date], select {
+  height: 36px; padding: 0 10px; font-size: 13px;
+  font-family: inherit;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text);
+  transition: border-color .12s, box-shadow .12s;
+  outline: none;
+}
+input:focus, select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(26,86,219,.12);
+}
+
+/* ─── Drop zone ─── */
+.drop-zone {
+  border: 1.5px dashed var(--border2);
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+  background: var(--surface2);
+}
+.drop-zone:hover, .drop-zone.drag-over {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+.drop-icon { font-size: 28px; margin-bottom: 8px; }
+.drop-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.drop-sub { font-size: 12px; color: var(--text3); }
+
+/* ─── Sheet tabs ─── */
+.tab-group { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab {
+  height: 30px; padding: 0 14px; font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border2); border-radius: 99px;
+  background: var(--surface); color: var(--text2); cursor: pointer;
+  transition: all .12s; font-family: inherit;
+}
+.tab:hover { background: var(--surface2); }
+.tab.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* ─── Header row selector ─── */
+.row-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.rnum-btn {
+  height: 30px; padding: 0 12px; font-size: 12px;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text2); cursor: pointer;
+  font-family: inherit; transition: all .12s;
+}
+.rnum-btn:hover { background: var(--surface2); }
+.rnum-btn.active { background: var(--blue-light); border-color: var(--blue); color: var(--blue); font-weight: 600; }
+
+/* ─── Table ─── */
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+table { width: 100%; border-collapse: collapse; font-size: 12px; white-space: nowrap; }
+th {
+  background: var(--surface2); padding: 7px 10px; text-align: left;
+  border-bottom: 1px solid var(--border); font-weight: 600;
+  color: var(--text2); font-size: 11px; position: sticky; top: 0;
+}
+td { padding: 6px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+.row-num { color: var(--text3); font-size: 11px; }
+
+/* ─── Mapping grid ─── */
+.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.map-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px;
+}
+.map-label { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 7px; display: flex; align-items: center; gap: 4px; }
+.required { color: var(--red); }
+.map-select {
+  width: 100%; height: 32px; padding: 0 8px; font-size: 12px;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text);
+  font-family: inherit; outline: none;
+}
+.map-select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,86,219,.12); }
+.map-auto { font-size: 10px; color: var(--green); margin-top: 4px; }
+
+/* ─── Buttons ─── */
+.btn {
+  height: 36px; padding: 0 16px; font-size: 13px; font-weight: 500;
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  background: var(--surface); color: var(--text); cursor: pointer;
+  font-family: inherit; transition: all .12s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover { background: var(--surface2); border-color: var(--border2); }
+.btn-primary {
+  background: var(--blue); color: #fff; border-color: var(--blue);
+}
+.btn-primary:hover { background: var(--blue-dark); border-color: var(--blue-dark); }
+.btn-sm { height: 30px; padding: 0 12px; font-size: 12px; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ─── Stats ─── */
+.stats-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.stat {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 5px 12px;
+  font-size: 12px; color: var(--text2);
+}
+.stat strong { font-weight: 600; color: var(--text); }
+.stat.ok { background: var(--green-light); border-color: #b7e0cc; color: var(--green); }
+.stat.ok strong { color: var(--green); }
+.stat.err { background: var(--red-light); border-color: #f5c0bb; color: var(--red); }
+.stat.err strong { color: var(--red); }
+
+/* ─── Badges ─── */
+.badge { display: inline-flex; align-items: center; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 9999px; }
+.badge-ok { background: var(--green-light); color: var(--green); }
+.badge-err { background: var(--red-light); color: var(--red); }
+.badge-warn { background: var(--amber-light); color: var(--amber); }
+
+/* ─── Amt mode row ─── */
+.mode-row { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.mode-row label { font-size: 12px; color: var(--text2); }
+.mode-row select { height: 30px; font-size: 12px; }
+
+/* ─── Action row ─── */
+.action-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+
+/* ─── Error table ─── */
+.err-section { margin-top: 14px; }
+.err-title { font-size: 12px; font-weight: 600; color: var(--red); margin-bottom: 8px; }
+
+/* ─── Footer ─── */
+.footer { text-align: center; margin-top: 32px; font-size: 11px; color: var(--text3); }
+.footer a { color: var(--blue); text-decoration: none; }
+
+/* ─── Help text ─── */
+.help { font-size: 11px; color: var(--text3); margin-top: 4px; }
+
+/* ─── Notice ─── */
+.notice {
+  background: var(--amber-light); border: 1px solid #fde68a;
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  font-size: 12px; color: var(--amber); margin-bottom: 14px;
+  display: flex; gap: 8px; align-items: flex-start;
+}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="header">
-    <h1>위하고 사업소득 변환기</h1>
-    <p>거래처 급여 데이터 → 위하고 SmartA 사업소득자료입력 양식 · AI 컬럼 자동 인식 · 주민번호 4단계 검증</p>
-  </div>
 
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon">W</div>
+    <span class="logo-text">위하고 사업소득 변환기</span>
+    <span class="logo-badge">v2</span>
+  </div>
+  <div class="header-right">거래처 급여대장 → 위하고 SmartA 사업소득자료입력 양식</div>
+</header>
+
+<div class="container">
+
+  <!-- STEP 1: 기본 설정 -->
   <div class="card">
-    <div class="sec-title"><span class="sec-num">1</span> 기본 설정</div>
-    <div class="grid3" style="margin-bottom:10px">
-      <div><label>귀속년월 *</label><input type="month" id="attr-month"></div>
-      <div><label>지급년월일 *</label><input type="date" id="pay-date"></div>
-      <div>
+    <div class="card-header">
+      <div class="step-num">1</div>
+      <span class="card-title">기본 설정</span>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label>귀속년월 *</label>
+        <input type="text" id="attr-month" placeholder="2026-04">
+      </div>
+      <div class="field">
+        <label>지급년월일 *</label>
+        <input type="date" id="pay-date">
+      </div>
+      <div class="field">
         <label>세율</label>
         <select id="tax-rate">
-          <option value="0.03">3% (일반)</option>
+          <option value="0.033" selected>3.3% (일반)</option>
           <option value="0.088">8.8%</option>
           <option value="0.22">22% (비거주자)</option>
         </select>
       </div>
-    </div>
-    <div class="grid2">
-      <div>
+      <div class="field">
         <label>소득구분 *</label>
         <select id="income-type">
-          <option value="">-- 소득구분 선택 --</option>
-          <optgroup label="의료"><option value="940910">병의원</option><option value="940911">간병인</option></optgroup>
-          <optgroup label="교육"><option value="940920">학원강사</option><option value="940921">방과후강사</option><option value="940922">학습지방문강사</option><option value="940923">교육교구방문강사</option></optgroup>
-          <optgroup label="IT·전문"><option value="940930">소프트웨어프리랜서</option><option value="940931">자문/고문</option><option value="940932">저술가</option></optgroup>
-          <optgroup label="운송"><option value="940940">대리운전</option><option value="940941">퀵서비스</option><option value="940942">물품배달</option><option value="940943">음료배달</option><option value="940944">어린이통학버스기사</option></optgroup>
-          <optgroup label="보험·금융모집"><option value="940950">보험설계</option><option value="940951">방판/외판</option><option value="940952">다단계판매</option><option value="940953">대출모집인</option><option value="940954">신용카드회원모집인</option><option value="940955">중고자동차판매원</option><option value="940956">기타모집수당</option></optgroup>
-          <optgroup label="연예·예술·스포츠"><option value="940960">화가관련</option><option value="940961">작곡가</option><option value="940962">배우</option><option value="940963">모델</option><option value="940964">가수</option><option value="940965">성악가</option><option value="940966">1인미디어콘텐츠창작자</option><option value="940967">연예보조</option><option value="940968">직업운동가</option><option value="940969">바둑기사</option><option value="940970">캐디</option></optgroup>
-          <optgroup label="기타인적용역"><option value="940980">행사도우미</option><option value="940981">심부름용역</option><option value="940982">목욕관리사</option><option value="940983">봉사료수취자</option><option value="940984">대여제품방문점검원</option><option value="940985">관광통역안내사</option><option value="940986">꽃꽂이교사</option><option value="940999">기타인적용역자</option></optgroup>
+          <option value="병의원간병인" selected>병의원 간병인</option>
+          <option value="학원강사">학원강사/방과후강사</option>
+          <option value="소프트웨어프리랜서">SW 프리랜서/자문·고문</option>
+          <option value="대리운전">대리운전/퀵서비스</option>
+          <option value="보험설계">보험설계/방판·외판</option>
+          <option value="화가관련">화가/배우/모델/가수</option>
+          <option value="1인미디어">1인 미디어 콘텐츠 창작자</option>
+          <option value="캐디">캐디</option>
+          <option value="행사도우미">행사도우미</option>
+          <option value="기타인적용역자">기타 인적용역자</option>
         </select>
       </div>
-      <div>
-        <label>내·외국인구분</label>
-        <select id="national"><option value="0">0. 내국인</option><option value="1">1. 외국인</option></select>
+      <div class="field">
+        <label>내·외국인</label>
+        <select id="foreigner">
+          <option value="0">0. 내국인</option>
+          <option value="1">1. 외국인</option>
+        </select>
       </div>
     </div>
   </div>
 
+  <!-- STEP 2: 파일 업로드 -->
   <div class="card">
-    <div class="sec-title"><span class="sec-num">2</span> 입력 방식 선택</div>
-    <div class="tab-group">
-      <button class="tab-btn active" id="tab-pre" onclick="switchTab('pre')">
-        <span class="tab-icon">📊</span>세전 엑셀<span class="tab-sub">지급액 기준</span>
-      </button>
-      <button class="tab-btn" id="tab-post" onclick="switchTab('post')">
-        <span class="tab-icon">📊</span>세후 엑셀<span class="tab-sub">차인지급액 기준</span>
-      </button>
-      <button class="tab-btn" id="tab-kakao" onclick="switchTab('kakao')">
-        <span class="tab-icon">💬</span>카톡 / 문자<span class="tab-sub">텍스트 붙여넣기</span>
-      </button>
+    <div class="card-header">
+      <div class="step-num">2</div>
+      <span class="card-title">엑셀 업로드</span>
     </div>
-
-    <div class="input-panel show" id="panel-pre">
-      <div class="upload-zone" id="zone-pre" onclick="document.getElementById('file-pre').click()">
-        <input type="file" id="file-pre" accept=".xlsx,.xls,.csv">
-        <span class="upload-icon">📂</span>
-        <div><strong>클릭하여 파일 선택</strong> 또는 드래그</div>
-        <div style="font-size:11px;margin-top:3px">xlsx · xls · csv 지원</div>
-      </div>
-      <div id="fname-pre" class="fname"></div>
-      <div id="ai-loading-pre" class="ai-loading">
-        <div class="spinner"></div>
-        <span>AI가 컬럼 구조를 파악하는 중...</span>
-      </div>
-      <div id="hdr-pre" class="hdr-detect"></div>
-      <div class="info-box info-purple" style="margin-top:10px">
-        🤖 <strong>AI 컬럼 자동 인식</strong> — 파일 업로드 시 AI가 헤더를 분석해 성명·주민번호·급여 컬럼을 자동으로 찾아줍니다. 확인 후 변환합니다.
-      </div>
+    <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+      <div class="drop-icon">📂</div>
+      <div class="drop-title" id="drop-title">클릭하여 파일 선택 또는 드래그</div>
+      <div class="drop-sub">xlsx · xls · csv 지원</div>
     </div>
+    <input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display:none">
+  </div>
 
-    <div class="input-panel" id="panel-post">
-      <div class="upload-zone" id="zone-post" onclick="document.getElementById('file-post').click()">
-        <input type="file" id="file-post" accept=".xlsx,.xls,.csv">
-        <span class="upload-icon">📂</span>
-        <div><strong>클릭하여 파일 선택</strong> 또는 드래그</div>
-        <div style="font-size:11px;margin-top:3px">xlsx · xls · csv 지원</div>
-      </div>
-      <div id="fname-post" class="fname"></div>
-      <div id="ai-loading-post" class="ai-loading">
-        <div class="spinner"></div>
-        <span>AI가 컬럼 구조를 파악하는 중...</span>
-      </div>
-      <div id="hdr-post" class="hdr-detect"></div>
-      <div class="info-box info-amber" style="margin-top:10px">
-        <strong>세후 역산 공식:</strong> 세전 = 세후 ÷ (1 − 세율 × 1.1)<br>
-        예) 세후 967,000원 → 세전 1,000,000원 (3.3% 기준)
-      </div>
+  <!-- STEP 3: 시트 선택 -->
+  <div class="card hidden" id="sheet-section">
+    <div class="card-header">
+      <div class="step-num">3</div>
+      <span class="card-title">시트 선택</span>
     </div>
+    <div class="tab-group" id="sheet-tabs"></div>
+  </div>
 
-    <div class="input-panel" id="panel-kakao">
-      <div class="kakao-hint">
-        [입력 예시] 한 줄에 1명<br>
-        홍길동 901225-1234567 1,500,000<br>
-        김영희 8503102345678 800000
-      </div>
-      <textarea id="kakao-text" placeholder="카톡·문자에서 복사한 내용을 붙여넣으세요.&#10;성명 / 주민번호 / 금액 순으로 한 줄씩&#10;하이픈(-) 있어도 없어도 자동 인식"></textarea>
-      <div class="info-box info-blue">13자리 숫자 → 주민번호, 10,000 이상 숫자 → 금액으로 자동 분류</div>
+  <!-- STEP 4: 헤더 행 선택 -->
+  <div class="card hidden" id="header-section">
+    <div class="card-header">
+      <div class="step-num">4</div>
+      <span class="card-title">헤더 행 선택</span>
+      <span class="card-hint">컬럼 이름이 있는 행 번호를 선택하세요</span>
+    </div>
+    <div class="row-btns" id="row-btns"></div>
+    <div class="tbl-wrap" id="raw-preview"></div>
+  </div>
+
+  <!-- STEP 5: 컬럼 매핑 -->
+  <div class="card hidden" id="mapping-section">
+    <div class="card-header">
+      <div class="step-num">5</div>
+      <span class="card-title">컬럼 매핑</span>
+      <span class="card-hint">위하고 항목 ↔ 엑셀 컬럼 직접 연결</span>
+    </div>
+    <div class="map-grid" id="map-grid"></div>
+    <div class="mode-row">
+      <label>금액 기준</label>
+      <select id="amt-mode">
+        <option value="gross">세전 지급액 (원금)</option>
+        <option value="net">세후 차인지급액 → 세전 역산</option>
+      </select>
+      <span class="help" id="formula-hint"></span>
+    </div>
+    <div class="action-row">
+      <button class="btn btn-primary" onclick="runConvert()">▶ 변환 실행</button>
     </div>
   </div>
 
-  <button class="btn-convert" id="btn-convert" onclick="doConvert()">변환 및 주민번호 검증 실행</button>
-
-  <div class="result-wrap" id="result-wrap">
-    <div class="divider"></div>
-    <div class="card">
-      <div class="sec-title">주민등록번호 검증 결과</div>
-      <div class="stats">
-        <div class="stat">       <div class="stat-n" id="s-total">0</div><div class="stat-l">전체</div></div>
-        <div class="stat c-ok"> <div class="stat-n" id="s-ok">0</div>   <div class="stat-l">정상</div></div>
-        <div class="stat c-err"><div class="stat-n" id="s-err">0</div>  <div class="stat-l">검증오류</div></div>
-        <div class="stat">       <div class="stat-n" id="s-warn">0</div><div class="stat-l">형식주의</div></div>
-      </div>
-      <div id="err-area" style="display:none">
-        <div class="err-title">오류 내역</div>
-        <div class="tbl-scroll">
-          <table>
-            <thead><tr><th style="width:40px">행</th><th style="width:70px">성명</th><th style="width:130px">주민번호</th><th>오류유형</th></tr></thead>
-            <tbody id="err-tbody"></tbody>
-          </table>
-        </div>
-      </div>
-      <div class="ok-msg" id="ok-msg">✓ 모든 주민등록번호가 유효합니다.</div>
+  <!-- STEP 6: 결과 -->
+  <div class="card hidden" id="result-section">
+    <div class="card-header">
+      <div class="step-num">6</div>
+      <span class="card-title">변환 결과</span>
     </div>
-    <div class="card">
-      <div class="sec-title">변환 미리보기 (상위 5건)</div>
-      <div class="tbl-scroll">
-        <table>
-          <thead><tr>
-            <th style="width:64px">성명</th><th style="width:110px">주민번호</th>
-            <th style="width:82px">세전지급액</th><th style="width:64px">소득세</th>
-            <th style="width:64px">지방세</th><th style="width:80px">차인지급액</th><th style="width:46px">검증</th>
-          </tr></thead>
-          <tbody id="preview-tbody"></tbody>
-        </table>
-      </div>
+    <div class="stats-row" id="stats-row"></div>
+    <div class="tbl-wrap" id="result-table"></div>
+    <div class="err-section" id="err-section" style="display:none">
+      <div class="err-title">⚠ 주민번호 오류 내역</div>
+      <div class="tbl-wrap" id="err-table"></div>
     </div>
-    <button class="btn-dl" id="btn-dl" onclick="doDownload()">📥 위하고 양식 다운로드 (xlsx)</button>
+    <div class="action-row">
+      <button class="btn btn-primary" id="btn-dl">📥 위하고 양식 다운로드 (xlsx)</button>
+      <button class="btn" onclick="resetAll()">↺ 초기화</button>
+    </div>
   </div>
+
+  <div class="footer">
+    위하고 사업소득 변환기 v2 &nbsp;·&nbsp; 주민번호는 브라우저에서만 처리되며 서버에 전송되지 않습니다.
+  </div>
+
 </div>
 
-<!-- AI 컬럼 매핑 확인 모달 -->
-<div class="modal-overlay" id="modal-overlay">
-  <div class="modal">
-    <div class="modal-title">
-      <span class="ai-badge">🤖 AI</span>
-      컬럼 매핑 확인
-    </div>
-    <div class="modal-sub" id="modal-sub">AI가 아래와 같이 컬럼을 인식했습니다. 확인 후 변환을 진행하세요.</div>
-
-    <div class="map-row">
-      <div class="map-label">👤 성명</div>
-      <select class="map-select" id="map-name"></select>
-    </div>
-    <div class="map-row">
-      <div class="map-label">🪪 주민번호</div>
-      <select class="map-select" id="map-rrn"></select>
-    </div>
-    <div class="map-row">
-      <div class="map-label">💰 급여액</div>
-      <select class="map-select" id="map-pay"></select>
-    </div>
-
-    <div class="sample-preview">
-      <div class="sample-preview-title">샘플 데이터 미리보기 (상위 3행)</div>
-      <div class="sample-scroll">
-        <table class="sample-table" id="sample-table"></table>
-      </div>
-    </div>
-
-    <div class="modal-actions">
-      <button class="btn-modal-cancel" onclick="closeModal()">취소</button>
-      <button class="btn-modal-ok" onclick="confirmMapping()">✓ 이 매핑으로 변환하기</button>
-    </div>
-  </div>
-</div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-let currentTab = 'pre';
-let resultRows = [];
-let pendingParsedRows = null;  // 엑셀 전체 rows (헤더 이후)
-let pendingAllRows = null;     // 전체 raw rows
-let pendingHdrIdx = null;
-let pendingHeaders = null;
-let pendingIsPost = false;
+// ── 상태 ──────────────────────────────────────────────
+let wb = null, sheets = {}, currentSheet = null, headerRow = 0;
+let colMap = { name: null, ssn: null, amount: null };
+let convertedData = [];
 
-// ── 키워드 fallback ──────────────────────────────────────────
-const NAME_KW     = ['성함','성명','이름','관리사','직원명','근로자명','담당자','소득자명','소득자'];
-const RRN_KW      = ['주민등록번호','주민번호','rrn','ssn','주민(외국인)번호','주민(외국인)등록번호'];
-const PAY_PRE_KW  = ['세전급여','세전 급여','세전지급','총근로임금','총 근로임금','급여총계','총급여','급여액','급여','지급액','금액','사업소득','pay','amount','이용총액','지급총액'];
-const PAY_POST_KW = ['최종지급액','차인지급액','세후급여','세후 급여','실지급액','실지급','실수령','net'];
-const SKIP_ROWS   = ['합계','소계','합 계','소 계','계','total','subtotal',''];
+// ── 위하고 매핑 필드 정의 ─────────────────────────────
+const FIELDS = [
+  {
+    key: 'name', label: '소득자명', required: true,
+    aliases: ['성명','이름','관리사명','제공인력','관리사이름','직원명','근로자명','수급자명','담당자','이름','관리사']
+  },
+  {
+    key: 'ssn', label: '주민등록번호', required: true,
+    aliases: ['주민번호','주민등록번호','주민','주민등록','식별번호','생년월일','주민번호(앞6자리)']
+  },
+  {
+    key: 'amount', label: '지급액 (세전 원금)', required: true,
+    aliases: ['원금','지급금액','급여','급여액','인건비','차인지급액','세전금액','세후금액','금액','지급액','총지급','임금']
+  },
+];
 
-function switchTab(t) {
-  currentTab = t;
-  ['pre','post','kakao'].forEach(id => {
-    document.getElementById('tab-'+id).classList.toggle('active', id===t);
-    document.getElementById('panel-'+id).classList.toggle('show', id===t);
-  });
-}
+// ── 초기화 ────────────────────────────────────────────
+function show(id){ document.getElementById(id).classList.remove('hidden') }
+function hide(id){ document.getElementById(id).classList.add('hidden') }
+function $(id){ return document.getElementById(id) }
 
-function findColByKw(header, candidates) {
-  for (const c of candidates) {
-    const idx = header.findIndex(h => String(h||'').toLowerCase().replace(/\s/g,'').includes(c.replace(/\s/g,'')));
-    if (idx >= 0) return idx;
-  }
-  return -1;
-}
+// 오늘 날짜 기본값
+(function(){
+  const now = new Date();
+  const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+  $('attr-month').value = ym;
+  const last = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  $('pay-date').value = last.toISOString().slice(0,10);
+})();
 
-// 3.3% 프리랜서 섹션 구분 키워드
-const FREELANCE_KW = ['3.3%','사업소득자','프리랜서','사업소득'];
+// amt-mode 변경 시 공식 힌트
+$('amt-mode').onchange = function(){
+  const rate = (parseFloat($('tax-rate').value)*100).toFixed(1);
+  $('formula-hint').textContent = this.value === 'net'
+    ? `세전 = 세후 ÷ (1 − ${rate}%)` : '';
+};
+$('tax-rate').onchange = () => $('amt-mode').dispatchEvent(new Event('change'));
 
-function detectHeaderRow(rows) {
-  const LIMIT = Math.min(rows.length, 60);
+// ── 파일 업로드 ──────────────────────────────────────
+$('file-input').onchange = function(e){
+  const f = e.target.files[0]; if(!f) return;
+  loadFile(f);
+};
 
-  // ① 최우선: "3.3%" / "사업소득자" 키워드 행의 바로 다음 헤더 행
-  //    → 4대보험+프리랜서 복합 양식 대응
-  for (let i = 0; i < LIMIT - 1; i++) {
-    const row = rows[i].map(c => String(c ?? '').replace(/\s/g,''));
-    if (row.some(c => FREELANCE_KW.some(k => c.includes(k)))) {
-      for (let j = i + 1; j < Math.min(i + 4, LIMIT); j++) {
-        const next = rows[j].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
-        const hasName = next.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))));
-        const hasRRN  = next.some(c => RRN_KW.some(k => c.includes(k.replace(/\s/g,''))));
-        if (hasName && hasRRN) return j;
-        if (hasName) return j;
-      }
-    }
-  }
-
-  // ② 성명+주민번호 키워드 둘 다 있는 첫 행
-  for (let i = 0; i < LIMIT; i++) {
-    const row = rows[i].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
-    const hasName = row.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))));
-    const hasRRN  = row.some(c => RRN_KW.some(k  => c.includes(k.replace(/\s/g,''))));
-    if (hasName && hasRRN) return i;
-  }
-
-  // ③ 귀속년월+성명 조합
-  for (let i = 0; i < LIMIT; i++) {
-    const row = rows[i].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
-    const hasAttr = row.some(c => c.includes('귀속년월') || c.includes('귀속월'));
-    const hasName = row.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))));
-    if (hasAttr && hasName) return i;
-  }
-
-  // ④ 성명 키워드만 있어도
-  for (let i = 0; i < LIMIT; i++) {
-    const row = rows[i].map(c => String(c ?? '').toLowerCase().replace(/\s/g,''));
-    if (row.some(c => NAME_KW.some(k => c.includes(k.replace(/\s/g,''))))) return i;
-  }
-
-  return 0;
-}
-
-function isDataRow(nameVal) {
-  const v = String(nameVal||'').trim().toLowerCase();
-  return v && !SKIP_ROWS.includes(v);
-}
-
-// ── AI 컬럼 매핑 ──────────────────────────────────────────────
-async function aiMapColumns(headers, sampleRows, isPost) {
-  const payLabel = isPost ? '세후 실지급액(차인지급액)' : '세전 지급액(급여)';
-  const prompt = `당신은 한국 세무 소프트웨어의 엑셀 컬럼 분석 전문가입니다.
-
-아래는 업로드된 엑셀 파일의 헤더와 샘플 데이터입니다.
-
-헤더: ${JSON.stringify(headers)}
-
-샘플 데이터(상위 5행):
-${sampleRows.slice(0,5).map((r,i) => `행${i+1}: ${JSON.stringify(r)}`).join('\n')}
-
-다음 3가지 컬럼의 인덱스(0부터 시작)를 찾아주세요:
-1. 성명(이름): 사람 이름이 들어있는 컬럼
-   - 헤더에 "성명", "이름" 등이 있으면 우선 사용
-   - 헤더가 비어있어도 샘플 데이터에서 2~4글자 한국어 이름처럼 보이는 값이 있는 컬럼을 선택
-   - 주민번호 컬럼 바로 왼쪽 컬럼이 이름인 경우가 많음
-2. 주민등록번호: 13자리 주민번호가 들어있는 컬럼 (하이픈 포함/미포함 모두 해당)
-3. 급여액(${payLabel}): 숫자로 된 금액 컬럼. 다음 이름을 우선순위 순서대로 탐색하세요:
-   - 세전: "세전급여" > "세전지급" > "사업소득" > "총근로임금" > "급여총계" > "총급여" > "급여액" > "급여" > "지급액" > "금액" > "이용총액" > "지급총액"
-   - 세후: "차인지급액" > "세후급여" > "실지급액" > "최종지급액"
-   - 헤더에 개행문자(\\n)가 포함될 수 있음. 예: "사업소득(1월)\\n-세원" → "사업소득"으로 인식
-   - 중요: 헤더 배열에 빈 문자열("")이 많은 sparse 구조일 수 있습니다. 빈 헤더는 무시하고 실제 텍스트가 있는 헤더만 비교하세요.
-   - 위 이름이 없으면 샘플 데이터에서 500,000 이상의 숫자가 있는 컬럼 중 가장 큰 값을 가진 것을 선택하세요.
-   - 단, 세금·소득세·지방세·국민연금·건강보험·고용보험·이용총액·본인부담금·정부지원금·합계·총금액 컬럼은 제외하세요.
-
-반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 절대 포함하지 마세요:
-{"name_col": <인덱스 또는 null>, "rrn_col": <인덱스 또는 null>, "pay_col": <인덱스 또는 null>, "reason": "<한 줄 설명>"}
-
-찾지 못한 경우 null로 응답하세요.`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    const data = await resp.json();
-    const text = data.content?.find(b => b.type==='text')?.text || '';
-    const clean = text.replace(/```json|```/g,'').trim();
-    return JSON.parse(clean);
-  } catch(e) {
-    console.error('AI 매핑 실패:', e);
-    return null;
-  }
-}
-
-// ── 모달 표시 ──────────────────────────────────────────────
-function showMappingModal(headers, sampleRows, aiResult, isPost) {
-  // select 옵션 생성
-  const makeOptions = (selIdx) => {
-    let opts = '<option value="-1">-- 해당 없음 --</option>';
-    headers.forEach((h, i) => {
-      const selected = i === selIdx ? 'selected' : '';
-      opts += `<option value="${i}" ${selected}>${h || '(빈 헤더)'}</option>`;
-    });
-    return opts;
-  };
-
-  const nameIdx = aiResult?.name_col ?? -1;
-  const rrnIdx  = aiResult?.rrn_col  ?? -1;
-  const payIdx  = aiResult?.pay_col  ?? -1;
-
-  document.getElementById('map-name').innerHTML = makeOptions(nameIdx);
-  document.getElementById('map-rrn').innerHTML  = makeOptions(rrnIdx);
-  document.getElementById('map-pay').innerHTML  = makeOptions(payIdx);
-
-  // AI 매핑 결과에 따라 색상
-  ['map-name','map-rrn','map-pay'].forEach((id, i) => {
-    const el = document.getElementById(id);
-    const val = [nameIdx, rrnIdx, payIdx][i];
-    el.className = 'map-select ' + (val >= 0 ? 'ai-found' : 'ai-notfound');
-    el.addEventListener('change', () => {
-      el.className = 'map-select ' + (parseInt(el.value) >= 0 ? 'ai-found' : 'ai-notfound');
-    });
-  });
-
-  // reason 표시
-  if (aiResult?.reason) {
-    document.getElementById('modal-sub').textContent = `🤖 AI 분석: ${aiResult.reason}`;
-  }
-
-  // 샘플 테이블
-  const tbl = document.getElementById('sample-table');
-  const hiCols = new Set([nameIdx, rrnIdx, payIdx].filter(v => v >= 0));
-  let html = '<thead><tr>';
-  headers.forEach((h, i) => {
-    html += `<th class="${hiCols.has(i)?'col-hi':''}">${h||'(빈 헤더)'}</th>`;
-  });
-  html += '</tr></thead><tbody>';
-  sampleRows.slice(0,3).forEach(r => {
-    html += '<tr>';
-    headers.forEach((_, i) => {
-      html += `<td class="${hiCols.has(i)?'col-hi':''}">${String(r[i]??'')}</td>`;
-    });
-    html += '</tr>';
-  });
-  html += '</tbody>';
-  tbl.innerHTML = html;
-
-  document.getElementById('modal-overlay').classList.add('show');
-}
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('show');
-  pendingParsedRows = null;
-}
-
-function confirmMapping() {
-  const ni = parseInt(document.getElementById('map-name').value);
-  const ri = parseInt(document.getElementById('map-rrn').value);
-  const pi = parseInt(document.getElementById('map-pay').value);
-
-  document.getElementById('modal-overlay').classList.remove('show');
-
-  if (!pendingAllRows || pendingHdrIdx === null) return;
-
-  const colHdrIdx = pendingHdrIdx;
-  const dataRows = pendingAllRows.slice(colHdrIdx + 1);
-  const isPost = pendingIsPost;
-
-  // 헤더 행의 핵심 값들 (반복 헤더 감지용)
-  const hdrRow = pendingAllRows[colHdrIdx];
-  const hdrSignature = new Set(
-    hdrRow.map(c => String(c||'').trim()).filter(c => c && c.length > 1)
-  );
-
-  let lastName = '', lastRRN = '';
-  const data = [];
-  dataRows.forEach((r, i) => {
-    // 반복 헤더 행 스킵: 주민번호 컬럼 값이 헤더 키워드면 건너뜀
-    const rrnVal = ri >= 0 ? String(r[ri]||'').trim() : '';
-    if (RRN_KW.some(k => rrnVal.replace(/\s/g,'').toLowerCase().includes(k))) return;
-
-    // 합계·빈 행 스킵
-    const rawName = ni >= 0 ? String(r[ni]||'').trim() : '';
-    const rawRRN  = ri >= 0 ? rrnVal.replace(/[-\u2013\u2014\u2212\uFF0D\s]/g,'') : '';
-    const rawPay  = pi >= 0 ? Math.round(Number(String(r[pi]||'').replace(/[,원\s]/g,''))||0) : 0;
-
-    if (rawName && isDataRow(rawName)) {
-      // 이름 컬럼이 숫자(순번)면 스킵
-      if (/^\d+$/.test(rawName)) return;
-      lastName = rawName;
-      lastRRN = rawRRN || lastRRN;
-    } else if (!rawName && rawRRN) {
-      // 이름은 없지만 주민번호는 있는 경우 (병합셀 등)
-      lastRRN = rawRRN;
-    } else if (!rawName && !rawRRN) {
-      // 이름·주민번호 둘 다 없는 행 = 합계/소계 → 무조건 스킵
-      return;
-    } else {
-      return;
-    }
-    if (rawRRN) lastRRN = rawRRN;
-    if (rawPay > 0 && lastName) {
-      data.push({ row: colHdrIdx + 2 + i, name: lastName, rrn: lastRRN, pay: rawPay });
-    }
-  });
-
-  processRows(data, isPost);
-}
-
-// ── 엑셀 파싱 + AI 매핑 ──────────────────────────────────────
-function parseExcelWithAI(file, isPost, hdrElId) {
-  const loadingEl = document.getElementById('ai-loading-' + (isPost ? 'post' : 'pre'));
-  loadingEl.classList.add('show');
-  document.getElementById('btn-convert').disabled = true;
-
-  const reader = new FileReader();
-  reader.onload = async ev => {
-    const wb = XLSX.read(new Uint8Array(ev.target.result), {type:'array'});
-    const ws = wb.Sheets[wb.SheetNames[0]];
-    const allRows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-
-    const hdrIdx = detectHeaderRow(allRows);
-    const colHdrIdx = hdrIdx;  // detectHeaderRow가 이미 정확한 헤더 행 반환
-    const rawHdr = allRows[colHdrIdx].map(h => String(h||'').trim());
-
-    // 헤더 감지 결과 표시
-    const hdrEl = document.getElementById(hdrElId);
-    if (hdrEl) {
-      hdrEl.textContent = `${colHdrIdx+1}행을 헤더로 인식 — [${rawHdr.filter(h=>h).slice(0,8).join(' | ')}]`;
-      hdrEl.style.display = 'block';
-    }
-
-    // 샘플 데이터 (헤더 이후 5행)
-    const sampleRows = allRows.slice(colHdrIdx + 1, colHdrIdx + 6);
-
-    // 전역 저장
-    pendingAllRows = allRows;
-    pendingHdrIdx  = colHdrIdx;
-    pendingHeaders = rawHdr;
-    pendingIsPost  = isPost;
-
-    // AI 호출
-    let aiResult = null;
-    try {
-      aiResult = await aiMapColumns(rawHdr, sampleRows, isPost);
-    } catch(e) {
-      console.error(e);
-    }
-
-    // AI 실패 시 키워드 fallback
-    if (!aiResult) {
-      const payKw = isPost ? PAY_POST_KW : PAY_PRE_KW;
-      aiResult = {
-        name_col: findColByKw(rawHdr, NAME_KW),
-        rrn_col:  findColByKw(rawHdr, RRN_KW),
-        pay_col:  findColByKw(rawHdr, payKw) >= 0
-                    ? findColByKw(rawHdr, payKw)
-                    : findColByKw(rawHdr, PAY_PRE_KW),
-        reason: '키워드 자동 매핑 (AI 응답 없음)'
-      };
-    }
-
-    loadingEl.classList.remove('show');
-    document.getElementById('btn-convert').disabled = false;
-
-    // 모달 표시
-    showMappingModal(rawHdr, sampleRows, aiResult, isPost);
-  };
-  reader.readAsArrayBuffer(file);
-}
-
-// ── 카카오 파싱 ──────────────────────────────────────────────
-function parseKakao(text) {
-  return text.trim().split(/\n/).filter(l=>l.trim()).map((line,i) => {
-    const tokens = line.trim().split(/[\s,\t]+/);
-    let name='', rrn='', pay=0;
-    for (const t of tokens) {
-      const clean = t.replace(/[-\u2013\u2014\u2212\uFF0D\s]/g,'');
-      if (/^\d{13}$/.test(clean)) { rrn=clean; continue; }
-      const num = Number(t.replace(/[,원]/g,''));
-      if (!isNaN(num) && num >= 10000) { pay=Math.round(num); continue; }
-      if (t.length >= 2 && t.length <= 6 && /^[가-힣a-zA-Z]+$/.test(t)) { name=t; continue; }
-    }
-    if (!name && tokens.length > 0) name = tokens[0];
-    return {row:i+1, name, rrn, pay};
-  }).filter(r => r.name||r.rrn||r.pay);
-}
-
-// ── 검증 ──────────────────────────────────────────────────
-function validateRRN(rrn) {
-  const r = rrn.replace(/[-–—−－\s]/g,'');
-  if (!/^\d{13}$/.test(r)) return {ok:false, warn:false, type:'자릿수 오류 (13자리 아님)'};
-  const yy=parseInt(r.slice(0,2)), mm=parseInt(r.slice(2,4)), dd=parseInt(r.slice(4,6));
-  if (mm<1||mm>12) return {ok:false, warn:false, type:'생년월일 오류 (월 범위)'};
-  if (dd<1||dd>31) return {ok:false, warn:false, type:'생년월일 오류 (일 범위)'};
-  const g=parseInt(r[6]);
-  let by;
-  if (g===1||g===2) by=1900+yy;
-  else if (g===3||g===4) by=2000+yy;
-  else if (g===5||g===6) by=1900+yy;
-  else if (g===7||g===8) by=2000+yy;
-  else by=1800+yy;
-  const isNew = by>2020||(by===2020&&mm>=10);
-  if (!isNew) {
-    const w=[2,3,4,5,6,7,8,9,2,3,4,5];
-    let s=0; for(let i=0;i<12;i++) s+=parseInt(r[i])*w[i];
-    const check=(11-(s%11))%10;
-    if (parseInt(r[12])!==check) return {ok:true, warn:true, type:'체크섬 주의 — 번호 확인 권장'};
-  }
-  return {ok:true, warn:false, type:''};
-}
-
-function calcTax(gross, rate) {
-  // rate = 0.03 (3%): 소득세 3%, 지방소득세 = 소득세 × 10%
-  const incomeTax = Math.floor(gross * rate / 10) * 10;              // 소득세: 세전 × 3%, 10원 미만 절사
-  const localTax  = Math.floor(incomeTax * 0.1 / 10) * 10;          // 지방소득세: 소득세 × 10%, 10원 미만 절사
-  return {incomeTax, localTax, totalDed:incomeTax+localTax, net:gross-incomeTax-localTax};
-}
-
-function grossFromNet(net, rate) {
-  // 세후 → 세전 역산: 세전 × (1 - rate - rate×0.1) = 세후
-  return Math.round(net / (1 - rate * 1.1));
-}
-
-function maskRRN(rrn) {
-  return rrn.length===13 ? rrn.slice(0,6)+'-'+rrn[6]+'●●●●●●' : (rrn||'(없음)');
-}
-
-// ── 변환 실행 ──────────────────────────────────────────────
-function doConvert() {
-  if (currentTab === 'kakao') {
-    const txt = document.getElementById('kakao-text').value;
-    if (!txt.trim()) { alert('카톡 내용을 붙여넣어 주세요.'); return; }
-    processRows(parseKakao(txt), false);
-  } else {
-    const isPost = currentTab === 'post';
-    const fid    = isPost ? 'file-post' : 'file-pre';
-    const hdrId  = isPost ? 'hdr-post'  : 'hdr-pre';
-    const f      = document.getElementById(fid).files[0];
-    if (!f) { alert('파일을 선택해 주세요.'); return; }
-    parseExcelWithAI(f, isPost, hdrId);
-    // 실제 변환은 confirmMapping()에서 수행
-  }
-}
-
-function processRows(rows, isPost) {
-  const rate = parseFloat(document.getElementById('tax-rate').value);
-  resultRows = rows.map(r => {
-    let gross = r.pay;
-    if (isPost) gross = grossFromNet(r.pay, rate);
-    const tax = calcTax(gross, rate);
-    const v   = validateRRN(r.rrn);
-    return {...r, gross, ...tax, valid:v.ok, warn:v.warn, errType:v.type};
-  });
-  renderResult();
-}
-
-function renderResult() {
-  const errTbody=document.getElementById('err-tbody');
-  const pvTbody =document.getElementById('preview-tbody');
-  errTbody.innerHTML=''; pvTbody.innerHTML='';
-  let ok=0, err=0, warn=0;
-  resultRows.forEach(r => { if(!r.valid) err++; else if(r.warn) warn++; else ok++; });
-  document.getElementById('s-total').textContent = resultRows.length;
-  document.getElementById('s-ok').textContent    = ok;
-  document.getElementById('s-err').textContent   = err;
-  document.getElementById('s-warn').textContent  = warn;
-  resultRows.filter(r=>!r.valid||r.warn).forEach(r => {
-    const tr=document.createElement('tr');
-    const cls = r.valid ? 'tag-warn' : 'tag-err';
-    tr.innerHTML=`<td>${r.row}</td><td>${r.name}</td><td style="font-family:monospace;font-size:11px">${maskRRN(r.rrn)}</td><td><span class="tag ${cls}">${r.errType}</span></td>`;
-    errTbody.appendChild(tr);
-  });
-  document.getElementById('err-area').style.display = (err+warn)>0?'block':'none';
-  document.getElementById('ok-msg').style.display   = (err+warn)===0?'block':'none';
-  resultRows.slice(0,5).forEach(r => {
-    const tr=document.createElement('tr');
-    if(!r.valid) tr.className='row-err';
-    tr.innerHTML=`<td>${r.name}</td><td style="font-family:monospace;font-size:10px">${maskRRN(r.rrn)}</td><td style="text-align:right">${r.gross.toLocaleString()}</td><td style="text-align:right">${r.incomeTax.toLocaleString()}</td><td style="text-align:right">${r.localTax.toLocaleString()}</td><td style="text-align:right">${r.net.toLocaleString()}</td><td><span class="tag ${r.valid?(r.warn?'tag-warn':'tag-ok'):'tag-err'}">${r.valid?(r.warn?'주의':'정상'):'오류'}</span></td>`;
-    pvTbody.appendChild(tr);
-  });
-  const dl=document.getElementById('btn-dl');
-  dl.style.display='block';
-  if (err>0)      { dl.textContent='⚠️ 오류 있음 — 그래도 다운로드 (xlsx)'; dl.className='btn-dl btn-dl-warn'; }
-  else if(warn>0) { dl.textContent='⚠️ 주의 항목 있음 — 다운로드 (xlsx)'; dl.className='btn-dl btn-dl-warn'; }
-  else            { dl.textContent='📥 위하고 양식 다운로드 (xlsx)'; dl.className='btn-dl'; }
-  document.getElementById('result-wrap').style.display='block';
-  document.getElementById('result-wrap').scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function doDownload() {
-  const rate  = parseFloat(document.getElementById('tax-rate').value);
-  const am    = document.getElementById('attr-month').value||'';
-  const pd    = document.getElementById('pay-date').value||'';
-  const itEl  = document.getElementById('income-type');
-  const nat   = document.getElementById('national').value;
-  const amFmt = am.replace('-','');
-  const pdFmt = pd.replace(/-/g,'');
-  const rateDisplay = String(Math.round(rate*100));
-  const incomeName  = itEl.selectedIndex > 0 ? itEl.options[itEl.selectedIndex].text : '';
-  const natLabel    = nat==='0' ? '0.내국인' : '1.외국인';
-
-  const titleRow = [' 사업소득자료입력','','','','','','','','','','','','','',''];
-  const hdrRow   = ['','귀속년월','지급년월일','소득자명','주민등록번호','기본주소','상세주소','소득구분','영수일자','지급총액','세율(%)','소득세','지방소득세','내.외국인구분','연말정산'];
-  const body = resultRows.map((r, i) => [
-    i+1, amFmt, pdFmt, r.name, r.rrn, '', '',
-    incomeName, pdFmt, r.gross, rateDisplay, r.incomeTax, r.localTax, natLabel, ''
-  ]);
-
-  const ws = XLSX.utils.aoa_to_sheet([titleRow, hdrRow, ...body]);
-  ws['!cols'] = [4,10,12,10,16,14,14,10,10,10,6,8,8,10,6].map(wch=>({wch}));
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, '사업소득자료입력');
-  XLSX.writeFile(wb, '위하고_사업소득_'+am+'.xlsx');
-}
-
-// ── 파일 이벤트 ──────────────────────────────────────────────
-['pre','post'].forEach(id => {
-  document.getElementById('file-'+id).addEventListener('change', e => {
-    const f = e.target.files[0];
-    if (f) setFile(id, f);
-  });
-  const zone = document.getElementById('zone-'+id);
-  zone.addEventListener('dragover', e => {
-    e.preventDefault();
-    zone.style.borderColor='var(--blue-text)';
-    zone.style.background='var(--bg)';
-    zone.style.color='var(--blue-text)';
-  });
-  zone.addEventListener('dragleave', e => {
-    zone.style.borderColor='';
-    zone.style.background='';
-    zone.style.color='';
-  });
-  zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.style.borderColor='';
-    zone.style.background='';
-    zone.style.color='';
-    const f = e.dataTransfer.files[0];
-    if (f) setFile(id, f);
-  });
+const dz = $('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('drag-over');
+  const f = e.dataTransfer.files[0]; if(!f) return;
+  loadFile(f);
 });
 
-function setFile(id, f) {
-  const dt = new DataTransfer();
-  dt.items.add(f);
-  document.getElementById('file-'+id).files = dt.files;
-  const el = document.getElementById('fname-'+id);
-  el.textContent = '선택된 파일: ' + f.name;
-  el.style.display = 'block';
-  document.getElementById('hdr-'+id).style.display = 'none';
+function loadFile(f){
+  $('drop-title').textContent = f.name;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const data = new Uint8Array(ev.target.result);
+    wb = XLSX.read(data, { type: 'array', cellDates: true });
+    sheets = {};
+    wb.SheetNames.forEach(n => {
+      sheets[n] = XLSX.utils.sheet_to_json(wb.Sheets[n], { header:1, defval:'', raw:false });
+    });
+    renderSheetTabs();
+  };
+  reader.readAsArrayBuffer(f);
+}
+
+// ── 시트 탭 ──────────────────────────────────────────
+function renderSheetTabs(){
+  show('sheet-section');
+  const c = $('sheet-tabs'); c.innerHTML = '';
+  wb.SheetNames.forEach((n, i) => {
+    const b = document.createElement('button');
+    b.className = 'tab' + (i===0 ? ' active' : '');
+    b.textContent = n;
+    b.onclick = () => {
+      c.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      selectSheet(n);
+    };
+    c.appendChild(b);
+  });
+  selectSheet(wb.SheetNames[0]);
+}
+
+function selectSheet(name){
+  currentSheet = name; headerRow = 0;
+  renderHeaderRowSelector();
+  show('header-section');
+  hide('mapping-section');
+  hide('result-section');
+}
+
+// ── 헤더 행 선택 ──────────────────────────────────────
+function renderHeaderRowSelector(){
+  const rows = sheets[currentSheet];
+  const btns = $('row-btns'); btns.innerHTML = '';
+  // 헤더로 보이는 첫 행 자동 추정
+  let autoRow = 0;
+  for(let i = 0; i < Math.min(8, rows.length); i++){
+    const hasText = rows[i].some(c => typeof c === 'string' && c.trim().length > 0);
+    if(hasText){ autoRow = i; break; }
+  }
+  headerRow = autoRow;
+
+  for(let i = 0; i < Math.min(10, rows.length); i++){
+    const row = rows[i];
+    const preview = row.filter(Boolean).slice(0,4).join(' / ');
+    const b = document.createElement('button');
+    b.className = 'rnum-btn' + (i === headerRow ? ' active' : '');
+    b.textContent = (i+1) + '행';
+    b.title = preview;
+    b.onclick = () => {
+      headerRow = i;
+      btns.querySelectorAll('.rnum-btn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      renderRawPreview();
+      detectAndRenderMapping();
+    };
+    btns.appendChild(b);
+  }
+  renderRawPreview();
+  detectAndRenderMapping();
+}
+
+function renderRawPreview(){
+  const rows = sheets[currentSheet];
+  const headers = (rows[headerRow] || []);
+  let html = '<table><thead><tr><th>#</th>' + headers.map(h=>`<th>${escHtml(String(h))}</th>`).join('') + '</tr></thead><tbody>';
+  for(let i = headerRow+1; i < Math.min(headerRow+5, rows.length); i++){
+    const row = rows[i];
+    if(!row.some(Boolean)) continue;
+    html += `<tr><td class="row-num">${i+1}</td>` + headers.map((_,ci)=>`<td>${escHtml(String(row[ci]??''))}</td>`).join('') + '</tr>';
+  }
+  html += '</tbody></table>';
+  $('raw-preview').innerHTML = html;
+}
+
+// ── 자동 감지 ─────────────────────────────────────────
+function autoDetect(headers){
+  const result = {};
+  FIELDS.forEach(f => {
+    const idx = headers.findIndex(h => {
+      const hs = String(h).replace(/\s/g,'').toLowerCase();
+      return f.aliases.some(a => hs.includes(a.toLowerCase().replace(/\s/g,'')));
+    });
+    result[f.key] = idx >= 0 ? idx : null;
+  });
+  return result;
+}
+
+function detectAndRenderMapping(){
+  const rows = sheets[currentSheet];
+  const headers = (rows[headerRow] || []).map(String);
+  colMap = autoDetect(headers);
+  renderMappingGrid(headers);
+  show('mapping-section');
+}
+
+// ── 매핑 그리드 ──────────────────────────────────────
+function renderMappingGrid(headers){
+  const opts = ['<option value="">-- 선택 --</option>',
+    ...headers.map((h,i) => `<option value="${i}">${escHtml(h||'(열 '+(i+1)+')')}</option>`)
+  ].join('');
+
+  const grid = $('map-grid'); grid.innerHTML = '';
+  FIELDS.forEach(f => {
+    const detected = colMap[f.key] !== null && colMap[f.key] !== undefined;
+    const card = document.createElement('div');
+    card.className = 'map-card';
+
+    const sel = document.createElement('select');
+    sel.className = 'map-select';
+    sel.id = 'map-' + f.key;
+    sel.innerHTML = opts;
+    if(detected) sel.value = String(colMap[f.key]);
+    sel.onchange = () => { colMap[f.key] = sel.value === '' ? null : parseInt(sel.value); };
+
+    card.innerHTML = `<div class="map-label">${f.label}${f.required?'<span class="required">*</span>':''}</div>`;
+    card.appendChild(sel);
+    if(detected) card.innerHTML += `<div class="map-auto">✓ 자동 인식됨</div>`;
+    grid.appendChild(card);
+  });
+}
+
+// ── 변환 실행 ─────────────────────────────────────────
+function runConvert(){
+  // 필수 컬럼 체크
+  const missing = FIELDS.filter(f => f.required && colMap[f.key] === null);
+  if(missing.length){
+    alert('필수 컬럼을 선택해주세요: ' + missing.map(f=>f.label).join(', '));
+    return;
+  }
+
+  const rows = sheets[currentSheet];
+  const taxRate = parseFloat($('tax-rate').value);
+  const amtMode = $('amt-mode').value;
+  const results = [], errors = [];
+
+  rows.slice(headerRow + 1).forEach((row, idx) => {
+    if(!row.some(Boolean)) return;
+    const name = String(row[colMap.name] ?? '').trim();
+    const ssnRaw = String(row[colMap.ssn] ?? '').replace(/[-\s]/g,'').trim();
+    const rawAmt = row[colMap.amount];
+    let amt = parseFloat(String(rawAmt).replace(/,/g,'')) || 0;
+
+    if(!name && !ssnRaw && amt === 0) return;
+
+    if(amtMode === 'net') amt = Math.round(amt / (1 - taxRate));
+
+    const incomeTax = Math.floor(amt * taxRate);
+    const localTax = Math.floor(incomeTax * 0.1);
+    const netPay = amt - incomeTax - localTax;
+    const ssnValid = validateSSN(ssnRaw);
+    const ssnFmt = ssnRaw.length === 13 ? ssnRaw.slice(0,6)+'-'+ssnRaw.slice(6) : ssnRaw;
+
+    const obj = { rowNum: headerRow+idx+2, name, ssn: ssnFmt, amt, incomeTax, localTax, netPay, valid: ssnValid };
+    results.push(obj);
+    if(!ssnValid) errors.push(obj);
+  });
+
+  convertedData = results;
+  renderResults(results, errors);
+  show('result-section');
+  $('result-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── 결과 렌더링 ──────────────────────────────────────
+function renderResults(rows, errors){
+  const ok = rows.filter(r => r.valid).length;
+  const totalAmt = rows.reduce((s,r) => s+r.amt, 0);
+  const totalTax = rows.reduce((s,r) => s+r.incomeTax+r.localTax, 0);
+
+  $('stats-row').innerHTML = `
+    <div class="stat">전체 <strong>${rows.length}명</strong></div>
+    <div class="stat ok">정상 <strong>${ok}건</strong></div>
+    ${errors.length ? `<div class="stat err">주민번호 오류 <strong>${errors.length}건</strong></div>` : ''}
+    <div class="stat">총 지급액 <strong>${totalAmt.toLocaleString()}원</strong></div>
+    <div class="stat">총 원천징수 <strong>${totalTax.toLocaleString()}원</strong></div>
+  `;
+
+  let html = `<table><thead><tr>
+    <th>#</th><th>소득자명</th><th>주민등록번호</th>
+    <th style="text-align:right">세전지급액</th>
+    <th style="text-align:right">소득세</th>
+    <th style="text-align:right">지방소득세</th>
+    <th style="text-align:right">차인지급액</th>
+    <th>검증</th>
+  </tr></thead><tbody>`;
+  rows.forEach(r => {
+    const badge = r.valid
+      ? '<span class="badge badge-ok">정상</span>'
+      : '<span class="badge badge-err">오류</span>';
+    html += `<tr>
+      <td class="row-num">${r.rowNum}</td>
+      <td><strong>${escHtml(r.name)}</strong></td>
+      <td style="font-family:monospace">${escHtml(r.ssn)}</td>
+      <td style="text-align:right">${r.amt.toLocaleString()}</td>
+      <td style="text-align:right">${r.incomeTax.toLocaleString()}</td>
+      <td style="text-align:right">${r.localTax.toLocaleString()}</td>
+      <td style="text-align:right"><strong>${r.netPay.toLocaleString()}</strong></td>
+      <td>${badge}</td>
+    </tr>`;
+  });
+  html += '</tbody></table>';
+  $('result-table').innerHTML = html;
+
+  if(errors.length){
+    let ehtml = `<table><thead><tr><th>#</th><th>소득자명</th><th>주민등록번호</th><th>오류 유형</th></tr></thead><tbody>`;
+    errors.forEach(r => {
+      const ssnStr = r.ssn.replace(/-/g,'');
+      let errType = '';
+      if(!/^\d{13}$/.test(ssnStr)) errType = '형식 오류 (13자리 아님)';
+      else errType = '검증 오류 (끝자리 불일치)';
+      ehtml += `<tr><td class="row-num">${r.rowNum}</td><td>${escHtml(r.name)}</td><td style="font-family:monospace">${escHtml(r.ssn)}</td><td><span class="badge badge-err">${errType}</span></td></tr>`;
+    });
+    ehtml += '</tbody></table>';
+    $('err-table').innerHTML = ehtml;
+    $('err-section').style.display = 'block';
+  } else {
+    $('err-section').style.display = 'none';
+  }
+}
+
+// ── 다운로드 ──────────────────────────────────────────
+$('btn-dl').onclick = function(){
+  if(!convertedData.length){ alert('먼저 변환을 실행하세요'); return; }
+  const attrMonth = $('attr-month').value;
+  const payDate = $('pay-date').value;
+  const incomeType = $('income-type').value;
+  const foreigner = $('foreigner').value;
+
+  const headers = ['귀속년월','지급년월일','소득구분','내외국인구분','소득자성명','주민등록번호','지급액','소득세','지방소득세','차인지급액'];
+  const dataRows = convertedData.map(r => [
+    attrMonth, payDate, incomeType, foreigner,
+    r.name, r.ssn, r.amt, r.incomeTax, r.localTax, r.netPay
+  ]);
+
+  const wsData = [headers, ...dataRows];
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // 컬럼 너비 설정
+  ws['!cols'] = [10,12,16,10,14,16,12,10,10,12].map(w=>({wch:w}));
+
+  const newWb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(newWb, ws, '사업소득자료');
+  XLSX.writeFile(newWb, `위하고_사업소득_${attrMonth}.xlsx`);
+};
+
+// ── 초기화 ────────────────────────────────────────────
+function resetAll(){
+  wb = null; sheets = {}; currentSheet = null; headerRow = 0;
+  colMap = { name: null, ssn: null, amount: null };
+  convertedData = [];
+  $('file-input').value = '';
+  $('drop-title').textContent = '클릭하여 파일 선택 또는 드래그';
+  hide('sheet-section'); hide('header-section'); hide('mapping-section'); hide('result-section');
+}
+
+// ── 주민번호 검증 (루한 알고리즘) ────────────────────
+function validateSSN(ssn){
+  const s = ssn.replace(/[-\s]/g,'');
+  if(!/^\d{13}$/.test(s)) return false;
+  const w = [2,3,4,5,6,7,8,9,2,3,4,5];
+  const sum = w.reduce((a,v,i) => a + v * parseInt(s[i]), 0);
+  const check = (11 - (sum % 11)) % 10;
+  return check === parseInt(s[12]);
+}
+
+// ── 유틸 ─────────────────────────────────────────────
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 </script>
 </body>
