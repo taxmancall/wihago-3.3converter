@@ -130,13 +130,20 @@
         <div class="field">
           <label>소득구분 *</label>
           <select id="incomeType">
-            <option value="간병인">940909 - 간병인(병의원)</option>
-            <option value="간병인">940919 - 간병인(기타)</option>
-            <option value="학원강사">940600 - 학원강사</option>
-            <option value="SW개발자">940300 - SW프리랜서</option>
-            <option value="보험설계사">941200 - 보험설계사</option>
-            <option value="배우">940100 - 배우·유튜버</option>
-            <option value="기타">940500 - 기타 프리랜서</option>
+            <option value="간병인">940912 - 간병인</option>
+            <option value="지술가">940100 - 지술가</option>
+            <option value="화가관련">940200 - 화가관련</option>
+            <option value="배우">940302 - 배우</option>
+            <option value="모델">940303 - 모델</option>
+            <option value="가수">940304 - 가수</option>
+            <option value="학원강사">940903 - 학원강사</option>
+            <option value="직업운동가">940904 - 직업운동가</option>
+            <option value="봉사료수취자">940905 - 봉사료수취자</option>
+            <option value="보험설계">940906 - 보험설계</option>
+            <option value="다단계판매">940910 - 다단계판매</option>
+            <option value="퀵서비스">940918 - 퀵서비스</option>
+            <option value="소프트웨어프리랜서">940926 - 소프트웨어프리랜서</option>
+            <option value="기타인적용역자">940909 - 기타인적용역자</option>
           </select>
         </div>
         <div class="field">
@@ -151,7 +158,7 @@
           <label>내·외국인 구분</label>
           <div style="padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:#f0fdf4;font-size:12px;color:#166534;">
             🔍 주민번호 7번째 자리로 자동판별<br>
-            <span style="color:var(--muted)">1~4,9,0 → 내국인(0) · 5~8 → 외국인(1)</span>
+            <span style="color:var(--muted)">1~4,9,0 → 내국인(1) · 5~8 → 외국인(9)</span>
           </div>
         </div>
         <div class="field">
@@ -546,7 +553,7 @@ document.getElementById('btnConvert').onclick = function() {
       taxRate: taxRateVal,
       foreignType: (function(r) {
         var d7 = parseInt(r[6]);
-        return (d7 >= 5 && d7 <= 8) ? '1' : '0';
+        return (d7 >= 5 && d7 <= 8) ? '9' : '1';  // 내국인=1, 외국인=9 (원천징수 작성방법 기준)
       })(rrnRaw)
     });
   });
@@ -594,8 +601,8 @@ function renderResult(errCount) {
       '<td>' + escHtml(d.name) + '</td>' +
       '<td style="font-family:monospace">' + escHtml(d.rrn) + '</td>' +
       '<td style="text-align:center">' +
-        '<span class="badge ' + (d.foreignType === '1' ? 'badge-warn' : 'badge-ok') + '">' +
-          (d.foreignType === '1' ? '외국인(1)' : '내국인(0)') +
+        '<span class="badge ' + (d.foreignType === '9' ? 'badge-warn' : 'badge-ok') + '">' +
+          (d.foreignType === '9' ? '외국인(9)' : '내국인(1)') +
         '</span>' +
       '</td>' +
       '<td style="text-align:right">' + numFmt(d.gross) + '</td>' +
